@@ -13,6 +13,7 @@ import com.udacity.stockhawk.data.Contract;
 import com.udacity.stockhawk.data.PrefUtils;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashSet;
@@ -44,34 +45,39 @@ public final class QuoteSyncJob {
 
         Timber.d("Running sync job");
 
+        //
         Calendar from = Calendar.getInstance();
         Calendar to = Calendar.getInstance();
         from.add(Calendar.YEAR, -YEARS_OF_HISTORY);
 
         try {
 
+            //get the stored abbrevs
             Set<String> stockPref = PrefUtils.getStocks(context);
+            //store copy of stockpref
             Set<String> stockCopy = new HashSet<>();
             stockCopy.addAll(stockPref);
+            //string array of original abbrevs
             String[] stockArray = stockPref.toArray(new String[stockPref.size()]);
 
             Timber.d(stockCopy.toString());
 
+            //if null, exit
             if (stockArray.length == 0) {
                 return;
             }
+
 
             Map<String, Stock> quotes = YahooFinance.get(stockArray);
             Iterator<String> iterator = stockCopy.iterator();
 
             Timber.d(quotes.toString());
 
+
             ArrayList<ContentValues> quoteCVs = new ArrayList<>();
 
             while (iterator.hasNext()) {
                 String symbol = iterator.next();
-
-
                 Stock stock = quotes.get(symbol);
                 StockQuote quote = stock.getQuote();
 
@@ -85,6 +91,8 @@ public final class QuoteSyncJob {
 
                 StringBuilder historyBuilder = new StringBuilder();
 
+                //convert list into string
+                //ex. "1293141294421,172.42123"
                 for (HistoricalQuote it : history) {
                     historyBuilder.append(it.getDate().getTimeInMillis());
                     historyBuilder.append(", ");
@@ -92,24 +100,24 @@ public final class QuoteSyncJob {
                     historyBuilder.append("\n");
                 }
 
+
                 ContentValues quoteCV = new ContentValues();
                 quoteCV.put(Contract.Quote.COLUMN_SYMBOL, symbol);
                 quoteCV.put(Contract.Quote.COLUMN_PRICE, price);
                 quoteCV.put(Contract.Quote.COLUMN_PERCENTAGE_CHANGE, percentChange);
                 quoteCV.put(Contract.Quote.COLUMN_ABSOLUTE_CHANGE, change);
-
-
                 quoteCV.put(Contract.Quote.COLUMN_HISTORY, historyBuilder.toString());
-
+                //convert contentvalues to quotecv
                 quoteCVs.add(quoteCV);
-
             }
 
+            //bulkinsert with arraylist
             context.getContentResolver()
                     .bulkInsert(
                             Contract.Quote.URI,
                             quoteCVs.toArray(new ContentValues[quoteCVs.size()]));
 
+            //?????
             Intent dataUpdatedIntent = new Intent(ACTION_DATA_UPDATED);
             context.sendBroadcast(dataUpdatedIntent);
 
@@ -118,20 +126,28 @@ public final class QuoteSyncJob {
         }
     }
 
+
+//    public static String getDate(long milliSeconds, String dateFormat)
+//    {
+//        // Create a DateFormatter object for displaying date in specified format.
+//        SimpleDateFormat formatter = new SimpleDateFormat(dateFormat);
+//        // Create a calendar object that will convert the date and time value in milliseconds to date.
+//        Calendar calendar = Calendar.getInstance();
+//        calendar.setTimeInMillis(milliSeconds);
+//        return formatter.format(calendar.getTime());
+//    }
+
+
     private static void schedulePeriodic(Context context) {
         Timber.d("Scheduling a periodic task");
 
-
         JobInfo.Builder builder = new JobInfo.Builder(PERIODIC_ID, new ComponentName(context, QuoteJobService.class));
-
 
         builder.setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
                 .setPeriodic(PERIOD)
                 .setBackoffCriteria(INITIAL_BACKOFF, JobInfo.BACKOFF_POLICY_EXPONENTIAL);
 
-
         JobScheduler scheduler = (JobScheduler) context.getSystemService(Context.JOB_SCHEDULER_SERVICE);
-
         scheduler.schedule(builder.build());
     }
 
@@ -154,8 +170,6 @@ public final class QuoteSyncJob {
         } else {
 
             JobInfo.Builder builder = new JobInfo.Builder(ONE_OFF_ID, new ComponentName(context, QuoteJobService.class));
-
-
             builder.setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
                     .setBackoffCriteria(INITIAL_BACKOFF, JobInfo.BACKOFF_POLICY_EXPONENTIAL);
 

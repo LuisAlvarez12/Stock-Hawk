@@ -23,6 +23,7 @@ import butterknife.ButterKnife;
 
 public class AddStockDialog extends DialogFragment {
 
+    //touch input to add abbreviation with dialogInput
     @SuppressWarnings("WeakerAccess")
     @BindView(R.id.dialog_stock)
     EditText stock;
@@ -30,6 +31,7 @@ public class AddStockDialog extends DialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
 
+        //create the builder
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
         LayoutInflater inflater = LayoutInflater.from(getActivity());
@@ -40,36 +42,47 @@ public class AddStockDialog extends DialogFragment {
         stock.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                //call to the callback method
                 addStock();
                 return true;
             }
         });
+        //custom view with edittext for stock abbrev input
         builder.setView(custom);
-
+        //title of dialog
         builder.setMessage(getString(R.string.dialog_title));
+        //add tag
         builder.setPositiveButton(getString(R.string.dialog_add),
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         addStock();
                     }
                 });
+        //cancel tag
         builder.setNegativeButton(getString(R.string.dialog_cancel), null);
-
+        //dialog creation
         Dialog dialog = builder.create();
 
         Window window = dialog.getWindow();
         if (window != null) {
+            //check the layout of the dialog
             window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
         }
 
         return dialog;
     }
 
+
+//add stock callback to mainactivities addstock method
     private void addStock() {
+        //get instance of mainactivity
         Activity parent = getActivity();
+        //check if mainactivity is parent
         if (parent instanceof MainActivity) {
+            //callback to add stock from contents of the input.
             ((MainActivity) parent).addStock(stock.getText().toString());
         }
+        //dismiss the fragment dialog
         dismissAllowingStateLoss();
     }
 
