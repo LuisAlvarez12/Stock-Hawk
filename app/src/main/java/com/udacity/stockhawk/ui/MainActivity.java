@@ -1,5 +1,7 @@
 package com.udacity.stockhawk.ui;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.ConnectivityManager;
@@ -9,13 +11,22 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.view.animation.TranslateAnimation;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,6 +38,9 @@ import com.udacity.stockhawk.sync.QuoteSyncJob;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import timber.log.Timber;
+
+import static android.icu.lang.UCharacter.GraphemeClusterBreak.V;
+
 
 public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>,
         SwipeRefreshLayout.OnRefreshListener,
@@ -44,8 +58,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     @BindView(R.id.swipe_refresh)
     SwipeRefreshLayout swipeRefreshLayout;
 
-    @SuppressWarnings("WeakerAccess")
-    @BindView(R.id.error)
     TextView error;
 
 
@@ -59,11 +71,57 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         Timber.d("Symbol clicked: %s", symbol);
     }
 
+    private float dX, dY;
+    private boolean ticker = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_main);
+        Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+
+        final ImageView search = (ImageView)findViewById(R.id.search_button);
+        final EditText searchkey = (EditText)findViewById(R.id.searchkey);
+        search.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+//                layout.animate()
+//                        .translationY(0)
+//                        .setDuration(20000)
+//                .setListener(new AnimatorListenerAdapter() {
+//                    @Override
+//                    public void onAnimationEnd(Animator animation) {
+//                        super.onAnimationEnd(animation);
+//
+//                    }
+//                });
+                if(!ticker) {
+                    ticker=true;
+//                    layout.setVisibility(View.VISIBLE);
+//                    Animation slide_down = AnimationUtils.loadAnimation(getApplicationContext(),
+//                            R.anim.view_slide_down);
+//                    layout.startAnimation(slide_down);
+                    searchkey.animate().alpha(1.0f).setDuration(700);
+                    searchkey.setVisibility(View.VISIBLE);
+                }else{
+                    ticker=false;
+//
+//                    Animation slide_down = AnimationUtils.loadAnimation(getApplicationContext(),
+//                            R.anim.view_slide_up);
+//                    layout.startAnimation(slide_down);
+                    searchkey.animate().alpha(0.0f).setDuration(700);
+
+                    searchkey.setVisibility(View.GONE);
+                }
+
+            }
+//                button(layout);
+
+
+        }
+        );
         //viewholder library
         ButterKnife.bind(this);
 
@@ -116,6 +174,14 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         return networkInfo != null && networkInfo.isConnectedOrConnecting();
     }
 
+    public void slideToBottom(View view){
+        TranslateAnimation animate = new TranslateAnimation(0,0,0,view.getHeight());
+        animate.setDuration(500);
+        animate.setFillAfter(true);
+        view.startAnimation(animate);
+        view.setVisibility(View.GONE);
+    }
+
 
     //implemented from swiperefreshlayout
     @Override
@@ -140,7 +206,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             error.setText(getString(R.string.error_no_stocks));
             error.setVisibility(View.VISIBLE);
         } else {
-            error.setVisibility(View.GONE);
+            //error.setVisibility(View.GONE);
         }
     }
 
@@ -187,9 +253,9 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     //menu including the current unit condition
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main_activity_settings, menu);
-        MenuItem item = menu.findItem(R.id.action_change_units);
-        setDisplayModeMenuItemIcon(item);
+//        getMenuInflater().inflate(R.menu.main_activity_settings, menu);
+//        MenuItem item = menu.findItem(R.id.action_change_units);
+//        setDisplayModeMenuItemIcon(item);
         return true;
     }
 
@@ -217,6 +283,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 Contract.Quote.URI,
                 Contract.Quote.QUOTE_COLUMNS.toArray(new String[]{}),
                 null, null, Contract.Quote.COLUMN_SYMBOL);
+
     }
 
     @Override
@@ -225,7 +292,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         swipeRefreshLayout.setRefreshing(false);
         //if nothing is available, make invis
         if (data.getCount() != 0) {
-            error.setVisibility(View.GONE);
+//            error.setVisibility(View.GONE);
         }
         adapter.setCursor(data);
     }

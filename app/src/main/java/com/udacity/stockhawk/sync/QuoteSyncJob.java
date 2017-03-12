@@ -95,7 +95,7 @@ public final class QuoteSyncJob {
                 //ex. "1293141294421,172.42123"
                 for (HistoricalQuote it : history) {
                     historyBuilder.append(it.getDate().getTimeInMillis());
-                    historyBuilder.append(", ");
+                    historyBuilder.append(",");
                     historyBuilder.append(it.getClose());
                     historyBuilder.append("\n");
                 }

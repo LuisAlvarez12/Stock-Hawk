@@ -18,6 +18,7 @@ public class StockProvider extends ContentProvider {
 
     private static final UriMatcher uriMatcher = buildUriMatcher();
 
+
     private DbHelper dbHelper;
 
     private static UriMatcher buildUriMatcher() {
