@@ -6,6 +6,8 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 import com.udacity.stockhawk.data.Contract.Quote;
 
+import static com.udacity.stockhawk.data.Contract.Quote.COLUMN_HISTORY_CLOSE;
+
 
 class DbHelper extends SQLiteOpenHelper {
 
@@ -26,7 +28,8 @@ class DbHelper extends SQLiteOpenHelper {
                 + Quote.COLUMN_PRICE + " REAL NOT NULL, "
                 + Quote.COLUMN_ABSOLUTE_CHANGE + " REAL NOT NULL, "
                 + Quote.COLUMN_PERCENTAGE_CHANGE + " REAL NOT NULL, "
-                + Quote.COLUMN_HISTORY + " TEXT NOT NULL, "
+                + Quote.COLUMN_HISTORY_DATE + " TEXT NOT NULL, "
+                + Quote.COLUMN_HISTORY_CLOSE + " TEXT NOT NULL, "
                 + "UNIQUE (" + Quote.COLUMN_SYMBOL + ") ON CONFLICT REPLACE);";
 
         db.execSQL(builder);

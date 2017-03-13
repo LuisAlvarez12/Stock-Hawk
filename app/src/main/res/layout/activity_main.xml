@@ -23,6 +23,7 @@
                         android:contentDescription="@string/app_name"
                         android:scaleType="fitCenter"
                         android:src="@drawable/stock_logo"/>
+
                 </android.support.v7.widget.Toolbar>
 
 

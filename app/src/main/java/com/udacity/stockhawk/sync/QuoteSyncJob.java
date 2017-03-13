@@ -13,7 +13,6 @@ import com.udacity.stockhawk.data.Contract;
 import com.udacity.stockhawk.data.PrefUtils;
 
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashSet;
@@ -29,6 +28,8 @@ import yahoofinance.histquotes.HistoricalQuote;
 import yahoofinance.histquotes.Interval;
 import yahoofinance.quotes.stock.StockQuote;
 
+import static com.udacity.stockhawk.data.Contract.Quote.COLUMN_HISTORY_CLOSE;
+
 public final class QuoteSyncJob {
 
     private static final int ONE_OFF_ID = 2;
@@ -36,19 +37,17 @@ public final class QuoteSyncJob {
     private static final int PERIOD = 300000;
     private static final int INITIAL_BACKOFF = 10000;
     private static final int PERIODIC_ID = 1;
-    private static final int YEARS_OF_HISTORY = 2;
+    private static final int YEARS_OF_HISTORY = 30;
 
     private QuoteSyncJob() {
     }
 
     static void getQuotes(Context context) {
 
-        Timber.d("Running sync job");
-
         //
         Calendar from = Calendar.getInstance();
         Calendar to = Calendar.getInstance();
-        from.add(Calendar.YEAR, -YEARS_OF_HISTORY);
+        from.add(Calendar.YEAR, -1);
 
         try {
 
@@ -89,16 +88,30 @@ public final class QuoteSyncJob {
                 // The request will hang forever X_x
                 List<HistoricalQuote> history = stock.getHistory(from, to, Interval.WEEKLY);
 
-                StringBuilder historyBuilder = new StringBuilder();
+                String closing="";
+                String dates="";
+                int i=1;
+                for(HistoricalQuote historyItems:history){
+                    if(i++==history.size()){
+                        dates=dates+historyItems.getDate().getTimeInMillis();
+                        closing=closing+historyItems.getClose()+"f";
+                    }else{
+                        dates=dates+historyItems.getDate().getTimeInMillis()+",";
+                        closing=closing+historyItems.getClose()+"f,";
+                    }
 
-                //convert list into string
-                //ex. "1293141294421,172.42123"
-                for (HistoricalQuote it : history) {
-                    historyBuilder.append(it.getDate().getTimeInMillis());
-                    historyBuilder.append(",");
-                    historyBuilder.append(it.getClose());
-                    historyBuilder.append("\n");
                 }
+//
+//                StringBuilder historyBuilder = new StringBuilder();
+//
+//                //convert list into string
+//                //ex. "1293141294421,172.42123"
+//                for (HistoricalQuote it : history) {
+//                    historyBuilder.append(it.getDate().getTimeInMillis());
+//                    historyBuilder.append(",");
+//                    historyBuilder.append(it.getClose());
+//                    historyBuilder.append("\n");
+//                }
 
 
                 ContentValues quoteCV = new ContentValues();
@@ -106,7 +119,10 @@ public final class QuoteSyncJob {
                 quoteCV.put(Contract.Quote.COLUMN_PRICE, price);
                 quoteCV.put(Contract.Quote.COLUMN_PERCENTAGE_CHANGE, percentChange);
                 quoteCV.put(Contract.Quote.COLUMN_ABSOLUTE_CHANGE, change);
-                quoteCV.put(Contract.Quote.COLUMN_HISTORY, historyBuilder.toString());
+                quoteCV.put(Contract.Quote.COLUMN_HISTORY_DATE,dates);
+                quoteCV.put(Contract.Quote.COLUMN_HISTORY_CLOSE, closing);
+
+
                 //convert contentvalues to quotecv
                 quoteCVs.add(quoteCV);
             }
