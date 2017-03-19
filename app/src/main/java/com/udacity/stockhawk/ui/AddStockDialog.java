@@ -7,6 +7,7 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -76,11 +77,11 @@ public class AddStockDialog extends DialogFragment {
 //add stock callback to mainactivities addstock method
     private void addStock() {
         //get instance of mainactivity
-        Activity parent = getActivity();
+        android.app.Fragment parent = getParentFragment();
         //check if mainactivity is parent
-        if (parent instanceof MainActivity) {
+        if (parent instanceof MainFragment) {
             //callback to add stock from contents of the input.
-            ((MainActivity) parent).addStock(stock.getText().toString());
+            ((MainFragment) parent).addStock(stock.getText().toString());
         }
         //dismiss the fragment dialog
         dismissAllowingStateLoss();

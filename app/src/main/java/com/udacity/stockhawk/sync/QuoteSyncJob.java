@@ -6,6 +6,7 @@ import android.content.ComponentName;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
@@ -13,6 +14,7 @@ import com.udacity.stockhawk.data.Contract;
 import com.udacity.stockhawk.data.PrefUtils;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashSet;
@@ -28,8 +30,6 @@ import yahoofinance.histquotes.HistoricalQuote;
 import yahoofinance.histquotes.Interval;
 import yahoofinance.quotes.stock.StockQuote;
 
-import static com.udacity.stockhawk.data.Contract.Quote.COLUMN_HISTORY_CLOSE;
-
 public final class QuoteSyncJob {
 
     private static final int ONE_OFF_ID = 2;
@@ -42,12 +42,95 @@ public final class QuoteSyncJob {
     private QuoteSyncJob() {
     }
 
+    public static void initFullGraphValues(Context context, String symbol, Cursor currentSymbol) {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(Contract.Quote.COLUMN_SYMBOL, currentSymbol.getString(Contract.Quote.POSITION_SYMBOL));
+        contentValues.put(Contract.Quote.COLUMN_PRICE, currentSymbol.getString(Contract.Quote.POSITION_PRICE));
+        contentValues.put(Contract.Quote.COLUMN_PERCENTAGE_CHANGE, currentSymbol.getString(Contract.Quote.POSITION_PERCENTAGE_CHANGE));
+        contentValues.put(Contract.Quote.COLUMN_ABSOLUTE_CHANGE, currentSymbol.getString(Contract.Quote.POSITION_ABSOLUTE_CHANGE));
+        contentValues.put(Contract.Quote.COLUMN_HISTORY_DATE, currentSymbol.getString(Contract.Quote.POSITION_HISTORY_DATE));
+        contentValues.put(Contract.Quote.COLUMN_HISTORY_CLOSE, currentSymbol.getString(Contract.Quote.POSITION_HISTORY_CLOSE));
+
+        Calendar from = Calendar.getInstance();
+        Calendar to = Calendar.getInstance();
+        String[] stockArray = {symbol};
+        Map<String, Stock> quotes = null;
+        try {
+            quotes = YahooFinance.get(stockArray);
+            ArrayList<ContentValues> quoteCVs = new ArrayList<>();
+            Stock stock = quotes.get(symbol);
+            StockQuote quote = stock.getQuote();
+            List<HistoricalQuote> history;
+            String closeMax = "";
+            String datesMax = "";
+            HistoryFetcher historyFetcher;
+            int j;
+            for (int i = 0; i < 4; i++) {
+                switch (i) {
+                    case 0:
+                        from = Calendar.getInstance();
+                        from.add(Calendar.WEEK_OF_YEAR, -2);
+                        history = stock.getHistory(from, to, Interval.DAILY);
+                         historyFetcher = new HistoryFetcher(history).invoke();
+                        closeMax = historyFetcher.getCloseMax();
+                        datesMax = historyFetcher.getDatesMax();
+                        contentValues.put(Contract.Quote.COLUMN_HISTORY_DAILY_CLOSE, datesMax);
+                        contentValues.put(Contract.Quote.COLUMN_HISTORY_DAILY_DATES, closeMax);
+                        break;
+                    case 1:
+                        from = Calendar.getInstance();
+                        from.add(Calendar.YEAR, -1);
+                        history = stock.getHistory(from, to, Interval.MONTHLY);
+                        historyFetcher = new HistoryFetcher(history).invoke();
+                        closeMax = historyFetcher.getCloseMax();
+                        datesMax = historyFetcher.getDatesMax();
+                        contentValues.put(Contract.Quote.COLUMN_HISTORY_MONTHLY_CLOSE, datesMax);
+                        contentValues.put(Contract.Quote.COLUMN_HISTORY_MONTHLY_DATES, closeMax);
+                        break;
+                    case 2:
+                        from.add(Calendar.YEAR, -3);
+                        history = stock.getHistory(from, to, Interval.MONTHLY);
+                        historyFetcher = new HistoryFetcher(history).invoke();
+                        closeMax = historyFetcher.getCloseMax();
+                        datesMax = historyFetcher.getDatesMax();
+                        contentValues.put(Contract.Quote.COLUMN_HISTORY_3YEAR_CLOSE, datesMax);
+                        contentValues.put(Contract.Quote.COLUMN_HISTORY_3YEAR_DATES, closeMax);
+                        break;
+                    case 3:
+                        from = Calendar.getInstance();
+                        from.add(Calendar.YEAR, -100);
+                        history = stock.getHistory(from, to, Interval.MONTHLY);
+                        historyFetcher = new HistoryFetcher(history).invoke();
+                        closeMax = historyFetcher.getCloseMax();
+                        datesMax = historyFetcher.getDatesMax();
+                        contentValues.put(Contract.Quote.COLUMN_HISTORY_MAX_CLOSE, datesMax);
+                        contentValues.put(Contract.Quote.COLUMN_HISTORY_MAX_DATES, closeMax);
+                        break;
+                }
+
+            }
+            String[] arg = {currentSymbol.getString(Contract.Quote.POSITION_SYMBOL)};
+            context.getContentResolver().update(
+                    Contract.Quote.URI,
+                    contentValues,
+                    Contract.Quote.COLUMN_SYMBOL + "=?",
+                    arg
+            );
+
+
+        } catch (IOException e) {
+
+        }
+
+    }
+
+
     static void getQuotes(Context context) {
 
         //
         Calendar from = Calendar.getInstance();
         Calendar to = Calendar.getInstance();
-        from.add(Calendar.YEAR, -1);
+        from.add(Calendar.YEAR, -10);
 
         try {
 
@@ -59,19 +142,13 @@ public final class QuoteSyncJob {
             //string array of original abbrevs
             String[] stockArray = stockPref.toArray(new String[stockPref.size()]);
 
-            Timber.d(stockCopy.toString());
-
             //if null, exit
             if (stockArray.length == 0) {
                 return;
             }
 
-
             Map<String, Stock> quotes = YahooFinance.get(stockArray);
             Iterator<String> iterator = stockCopy.iterator();
-
-            Timber.d(quotes.toString());
-
 
             ArrayList<ContentValues> quoteCVs = new ArrayList<>();
 
@@ -94,25 +171,12 @@ public final class QuoteSyncJob {
                 for(HistoricalQuote historyItems:history){
                     if(i++==history.size()){
                         dates=dates+historyItems.getDate().getTimeInMillis();
-                        closing=closing+historyItems.getClose()+"f";
+                        closing=closing+historyItems.getClose()+"";
                     }else{
                         dates=dates+historyItems.getDate().getTimeInMillis()+",";
-                        closing=closing+historyItems.getClose()+"f,";
+                        closing=closing+historyItems.getClose()+",";
                     }
-
                 }
-//
-//                StringBuilder historyBuilder = new StringBuilder();
-//
-//                //convert list into string
-//                //ex. "1293141294421,172.42123"
-//                for (HistoricalQuote it : history) {
-//                    historyBuilder.append(it.getDate().getTimeInMillis());
-//                    historyBuilder.append(",");
-//                    historyBuilder.append(it.getClose());
-//                    historyBuilder.append("\n");
-//                }
-
 
                 ContentValues quoteCV = new ContentValues();
                 quoteCV.put(Contract.Quote.COLUMN_SYMBOL, symbol);
@@ -143,15 +207,15 @@ public final class QuoteSyncJob {
     }
 
 
-//    public static String getDate(long milliSeconds, String dateFormat)
-//    {
-//        // Create a DateFormatter object for displaying date in specified format.
-//        SimpleDateFormat formatter = new SimpleDateFormat(dateFormat);
-//        // Create a calendar object that will convert the date and time value in milliseconds to date.
-//        Calendar calendar = Calendar.getInstance();
-//        calendar.setTimeInMillis(milliSeconds);
-//        return formatter.format(calendar.getTime());
-//    }
+    public static String getDate(long milliSeconds, String dateFormat)
+    {
+        // Create a DateFormatter object for displaying date in specified format.
+        SimpleDateFormat formatter = new SimpleDateFormat(dateFormat);
+        // Create a calendar object that will convert the date and time value in milliseconds to date.
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(milliSeconds);
+        return formatter.format(calendar.getTime());
+    }
 
 
     private static void schedulePeriodic(Context context) {
@@ -199,4 +263,75 @@ public final class QuoteSyncJob {
     }
 
 
+    private static class HistoryLooper {
+        private List<HistoricalQuote> history;
+        private String closeMax;
+        private String datesMax;
+
+        public HistoryLooper(List<HistoricalQuote> history) {
+            this.history = history;
+        }
+
+        public String getCloseMax() {
+            return closeMax;
+        }
+
+        public String getDatesMax() {
+            return datesMax;
+        }
+
+        public HistoryLooper invoke() {
+            int j;
+            closeMax = "";
+            datesMax = "";
+            j = history.size() - 1;
+            for (HistoricalQuote hQuote : history) {
+                if (j == 0) {
+                    closeMax = closeMax + hQuote.getClose();
+                    datesMax = datesMax + hQuote.getDate().getTimeInMillis();
+                } else {
+                    closeMax = closeMax + hQuote.getClose() + "!";
+                    datesMax = datesMax + hQuote.getDate().getTimeInMillis() + "!";
+                }
+                j--;
+            }
+            return this;
+        }
+    }
+
+    private static class HistoryFetcher {
+        private List<HistoricalQuote> history;
+        private String closeMax;
+        private String datesMax;
+
+        public HistoryFetcher(List<HistoricalQuote> history) {
+            this.history = history;
+        }
+
+        public String getCloseMax() {
+            return closeMax;
+        }
+
+        public String getDatesMax() {
+            return datesMax;
+        }
+
+        public HistoryFetcher invoke() {
+            int j;
+            closeMax = "";
+            datesMax = "";
+            j = history.size() - 1;
+            for (HistoricalQuote hQuote : history) {
+                if (j == 0) {
+                    closeMax = closeMax + hQuote.getClose();
+                    datesMax = datesMax + hQuote.getDate().getTimeInMillis();
+                } else {
+                    closeMax = closeMax + hQuote.getClose() + ",";
+                    datesMax = datesMax + hQuote.getDate().getTimeInMillis() + ",";
+                }
+                j--;
+            }
+            return this;
+        }
+    }
 }

@@ -1,89 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    >
+    tools:context=".ui.DetailActivity">
 
-    <ScrollView
+    <fragment
+        android:name="com.udacity.stockhawk.fragments.DetailFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-        <FrameLayout
-            android:id="@+id/frame"
-            android:layout_width="match_parent"
-            android:layout_height="300dp">
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginBottom="?android:attr/listPreferredItemHeightSmall"
-                android:background="@color/colorPrimary" />
-
-            <android.support.v7.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom|center_horizontal"
-                android:layout_marginBottom="5dp"
-                android:layout_marginLeft="80dp"
-                android:layout_marginRight="80dp"
-                app:cardBackgroundColor="@color/cardview_light_background">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="?android:attr/listPreferredItemHeightLarge"
-                    android:gravity="center"
-                    android:text="$149.87"
-                    android:textColor="@color/primary_text"
-                    android:textSize="50sp"
-
-                    />
-            </android.support.v7.widget.CardView>
-        </FrameLayout>
-
-        <android.support.v7.widget.CardView
-            android:id="@+id/cv"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:layout_marginBottom="20dp"
-            app:cardBackgroundColor="@color/cardview_light_background">
-
-
-            <FrameLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <com.robinhood.spark.SparkView
-                    android:id="@+id/sparkview"
-                    android:layout_width="wrap_content"
-                    android:layout_height="300dp"
-                    android:layout_margin="10dp"
-                    app:spark_animateChanges="true"
-                    app:spark_lineColor="@color/material_green_dark"
-                    app:spark_scrubEnabled="true" />
-
-                <TextView
-                    android:id="@+id/tv_sparkview"
-                    android:background="@color/cardview_light_background"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="left"
-                    android:layout_margin="10dp"
-                    android:textSize="30sp"
-                    android:textColor="@color/primary_text" />
-            </FrameLayout>
-        </android.support.v7.widget.CardView>
-        </LinearLayout>
-    </ScrollView>
-
-</LinearLayout>
+        android:id="@+id/fragment_detail_holder"/>
+    </RelativeLayout>

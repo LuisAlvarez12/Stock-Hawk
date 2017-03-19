@@ -8,6 +8,7 @@ import com.robinhood.spark.SparkAdapter;
 
 public class SparkLineAdapter extends SparkAdapter {
     private float[] yData;
+    private int position;
 
     public SparkLineAdapter(float[] yData) {
         this.yData = yData;
@@ -20,7 +21,12 @@ public class SparkLineAdapter extends SparkAdapter {
 
     @Override
     public Object getItem(int index) {
+        position=index;
         return yData[index];
+    }
+
+    public int getPosition(){
+        return position;
     }
 
     @Override

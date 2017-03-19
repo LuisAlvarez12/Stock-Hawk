@@ -30,6 +30,14 @@ class DbHelper extends SQLiteOpenHelper {
                 + Quote.COLUMN_PERCENTAGE_CHANGE + " REAL NOT NULL, "
                 + Quote.COLUMN_HISTORY_DATE + " TEXT NOT NULL, "
                 + Quote.COLUMN_HISTORY_CLOSE + " TEXT NOT NULL, "
+                + Quote.COLUMN_HISTORY_MAX_DATES + " TEXT, "
+                + Quote.COLUMN_HISTORY_MAX_CLOSE + " TEXT, "
+                + Quote.COLUMN_HISTORY_DAILY_DATES + " TEXT, "
+                + Quote.COLUMN_HISTORY_DAILY_CLOSE + " TEXT, "
+                + Quote.COLUMN_HISTORY_MONTHLY_DATES + " TEXT, "
+                + Quote.COLUMN_HISTORY_MONTHLY_CLOSE + " TEXT, "
+                + Quote.COLUMN_HISTORY_3YEAR_DATES + " TEXT, "
+                + Quote.COLUMN_HISTORY_3YEAR_CLOSE + " TEXT, "
                 + "UNIQUE (" + Quote.COLUMN_SYMBOL + ") ON CONFLICT REPLACE);";
 
         db.execSQL(builder);

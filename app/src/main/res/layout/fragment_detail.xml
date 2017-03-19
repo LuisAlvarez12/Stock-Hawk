@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent">
+<android.support.design.widget.CoordinatorLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/app_bar_layout"
+        android:layout_width="match_parent"
+        android:fitsSystemWindows="true"
+        android:layout_height="wrap_content">
+
+        <android.support.design.widget.CollapsingToolbarLayout
+            android:id="@+id/collapsing_toolbar"
+            android:layout_width="match_parent"
+            android:fitsSystemWindows="true"
+            android:layout_height="match_parent"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed"
+            app:contentScrim="?attr/colorPrimary">
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_gravity="center"
+                android:layout_height="200dp">
+
+                <TextView
+                    android:id="@+id/tittles"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="titties!!!!"
+                    android:textColor="@color/white"
+                    android:gravity="center"
+                    android:textSize="80sp"/>
+            </FrameLayout>
+
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar"
+                app:title="GOOG     143.32"
+                app:collapseIcon="@drawable/stock_logo"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                app:layout_collapseMode="pin" >
+
+            </android.support.v7.widget.Toolbar>
+        </android.support.design.widget.CollapsingToolbarLayout>
+    </android.support.design.widget.AppBarLayout>
+
+    <android.support.v4.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/size_large_container_view"
+                android:layout_margin="@dimen/margin_main_views"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="left"
+                        android:text="@string/title_loss_gain_percentage"
+                        android:textColor="@color/secondary_text"
+                        android:textSize="@dimen/textsize_small_detail" />
+
+                    <TextView
+                        android:id="@+id/tv_detail_percentage"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="left"
+                        android:text=""
+                        android:textColor="@color/primary_text"
+                        android:textSize="@dimen/textsize_medium_detail" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="left"
+                        android:text="@string/title_loss_gain_actual"
+                        android:textColor="@color/secondary_text"
+                        android:textSize="@dimen/textsize_small_detail" />
+
+                    <TextView
+                        android:id="@+id/tv_detail_actual"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="left"
+                        android:text=""
+                        android:textColor="@color/primary_text"
+                        android:textSize="@dimen/textsize_medium_detail" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="left"
+                        android:text="@string/title_high_low"
+                        android:textColor="@color/secondary_text"
+                        android:textSize="@dimen/textsize_small_detail" />
+
+                    <TextView
+                        android:id="@+id/tv_detail"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="left"
+                        android:text="@string/default_highlow_value"
+                        android:textColor="@color/primary_text"
+                        android:textSize="@dimen/textsize_medium_detail" />
+
+                </LinearLayout>
+
+                <View
+                    android:layout_width="@dimen/size_linebreak_view"
+                    android:layout_height="match_parent"
+                    android:layout_marginBottom="@dimen/margin_15_var"
+                    android:layout_marginTop="@dimen/margin_15_var"
+                    android:background="@color/secondary_text" />
+
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_margin="@dimen/margin_detail_icons"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:id="@+id/icon_article"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/newspaper" />
+                </LinearLayout>
+            </LinearLayout>
+            <!--</LinearLayout>-->
+
+            <android.support.v7.widget.CardView
+                android:id="@+id/cv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/margin_main_views"
+                android:layout_marginLeft="@dimen/margin_main_views"
+                android:layout_marginRight="@dimen/margin_main_views"
+                app:cardBackgroundColor="@color/cardview_light_background">
+
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <android.support.design.widget.TabLayout
+                        android:id="@+id/tab_layout1"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@color/cardview_light_background"
+                        android:minHeight="?attr/actionBarSize"
+                        android:theme="@style/ThemeOverlay.AppCompat.Light" />
+
+                    <TextView
+                        android:id="@+id/tv_sparkview"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/margin_sub_views"
+                        android:gravity="left"
+                        android:text=" \n "
+                        android:textColor="@color/primary_text"
+                        android:textSize="@dimen/textsize_medium_detail" />
+
+                    <FrameLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <com.robinhood.spark.SparkView
+                            android:id="@+id/sparkview"
+                            android:layout_width="wrap_content"
+                            android:layout_height="@dimen/size_sparkview"
+                            android:layout_margin="@dimen/margin_sub_views"
+                            app:spark_animateChanges="true"
+                            app:spark_lineColor="@color/material_green_dark"
+                            app:spark_scrubEnabled="true" />
+
+                    </FrameLayout>
+                </LinearLayout>
+            </android.support.v7.widget.CardView>
+        </LinearLayout>
+
+    </android.support.v4.widget.NestedScrollView>
+</android.support.design.widget.CoordinatorLayout>
+</LinearLayout>
+
+

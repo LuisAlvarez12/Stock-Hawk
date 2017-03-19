@@ -16,16 +16,26 @@ public final class Contract {
     private Contract() {
     }
 
-    @SuppressWarnings("unused")
+
     public static final class Quote implements BaseColumns {
 
         public static final Uri URI = BASE_URI.buildUpon().appendPath(PATH_QUOTE).build();
+
         public static final String COLUMN_SYMBOL = "symbol";
         public static final String COLUMN_PRICE = "price";
         public static final String COLUMN_ABSOLUTE_CHANGE = "absolute_change";
         public static final String COLUMN_PERCENTAGE_CHANGE = "percentage_change";
         public static final String COLUMN_HISTORY_DATE = "history";
         public static final String COLUMN_HISTORY_CLOSE = "history_close";
+        public static final String COLUMN_HISTORY_MAX_DATES = "history_max_dates";
+        public static final String COLUMN_HISTORY_MAX_CLOSE = "history_max_close";
+        public static final String COLUMN_HISTORY_DAILY_DATES = "history_daily_dates";
+        public static final String COLUMN_HISTORY_DAILY_CLOSE = "history_daily_close";
+        public static final String COLUMN_HISTORY_MONTHLY_DATES = "history_monthly_dates";
+        public static final String COLUMN_HISTORY_MONTHLY_CLOSE = "history_monthly_close";
+        public static final String COLUMN_HISTORY_3YEAR_DATES = "history_3year_dates";
+        public static final String COLUMN_HISTORY_3YEAR_CLOSE = "history_3year_close";
+
         public static final int POSITION_ID = 0;
         public static final int POSITION_SYMBOL = 1;
         public static final int POSITION_PRICE = 2;
@@ -33,6 +43,15 @@ public final class Contract {
         public static final int POSITION_PERCENTAGE_CHANGE = 4;
         public static final int POSITION_HISTORY_DATE = 5;
         public static final int POSITION_HISTORY_CLOSE = 6;
+        public static final int POSITION_HISTORY_MAX_CLOSE = 7;
+        public static final int POSITION_HISTORY_MAX_DATES = 8;
+        public static final int POSITION_HISTORY_DAILY_CLOSE = 9;
+        public static final int POSITION_HISTORY_DAILY_DATES = 10;
+        public static final int POSITION_HISTORY_MONTHLY_CLOSE = 11;
+        public static final int POSITION_HISTORY_MONTHLY_DATES = 12;
+        public static final int POSITION_HISTORY_3YEAR_CLOSE = 13;
+        public static final int POSITION_HISTORY_3YEAR_DATES = 14;
+
         public static final ImmutableList<String> QUOTE_COLUMNS = ImmutableList.of(
                 _ID,
                 COLUMN_SYMBOL,
@@ -40,7 +59,15 @@ public final class Contract {
                 COLUMN_ABSOLUTE_CHANGE,
                 COLUMN_PERCENTAGE_CHANGE,
                 COLUMN_HISTORY_DATE,
-                COLUMN_HISTORY_CLOSE
+                COLUMN_HISTORY_CLOSE,
+                COLUMN_HISTORY_MAX_DATES,
+                COLUMN_HISTORY_MAX_CLOSE,
+                COLUMN_HISTORY_DAILY_DATES,
+                COLUMN_HISTORY_DAILY_CLOSE,
+                COLUMN_HISTORY_MONTHLY_DATES,
+                COLUMN_HISTORY_MONTHLY_CLOSE,
+                COLUMN_HISTORY_3YEAR_DATES,
+                COLUMN_HISTORY_3YEAR_CLOSE
         );
         static final String TABLE_NAME = "quotes";
 

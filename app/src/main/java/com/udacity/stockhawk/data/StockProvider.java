@@ -9,6 +9,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 
 public class StockProvider extends ContentProvider {
@@ -29,6 +30,7 @@ public class StockProvider extends ContentProvider {
     }
 
 
+
     @Override
     public boolean onCreate() {
         dbHelper = new DbHelper(getContext());
@@ -39,7 +41,7 @@ public class StockProvider extends ContentProvider {
     @Override
     public Cursor query(@NonNull Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
         Cursor returnCursor;
-        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
 
         switch (uriMatcher.match(uri)) {
             case QUOTE:
@@ -153,7 +155,20 @@ public class StockProvider extends ContentProvider {
 
     @Override
     public int update(@NonNull Uri uri, ContentValues values, String selection, String[] selectionArgs) {
-        return 0;
+        final SQLiteDatabase db = dbHelper.getWritableDatabase();
+        int rows=-1;
+        switch (uriMatcher.match(uri)) {
+            case QUOTE_FOR_SYMBOL:
+                rows = db.update(Contract.Quote.TABLE_NAME, values, selection, selectionArgs);
+                Log.d("cursor","rows done 1!");
+                return rows;
+            case QUOTE:
+                rows = db.update(Contract.Quote.TABLE_NAME, values, selection, selectionArgs);
+                Log.d("cursor","rows done 2!");
+                return rows;
+        }
+        Log.d("cursor","row -1");
+        return rows;
     }
 
     @Override

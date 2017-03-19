@@ -2,4 +2,45 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
+
+    <!--elevations-->
+    <dimen name="elev_app_bar">4dp</dimen>
+    <dimen name="elev_card">2dp</dimen>
+
+    <!--margins-->
+    <dimen name="margin_bottom_card">5dp</dimen>
+    <dimen name="margin_card_list_items">40dp</dimen>
+    <dimen name="margin_detail_icons">30dp</dimen>
+    <dimen name="margin_main_views">20dp</dimen>
+    <dimen name="margin_sub_views">10dp</dimen>
+    <dimen name="margin_15_var">15dp</dimen>
+    <dimen name="margin_card">80dp</dimen>
+    <dimen name="margin_start_collapsing">48dp</dimen>
+    <dimen name="margin_end_collapsing">64dp</dimen>
+
+
+    <!--text sizes-->
+    <dimen name="textsize_small_detail">18sp</dimen>
+    <dimen name="textsize_medium_detail">30sp</dimen>
+    <dimen name="textsize_medium_large_detail">40sp</dimen>
+    <dimen name="textsize_large_detail">50sp</dimen>
+
+
+
+    <!--layout sizes-->
+    <dimen name="size_linebreak_view">2dp</dimen>
+    <dimen name="size_large_container_view">250dp</dimen>
+    <dimen name="size_sparkview">350dp</dimen>
+    <dimen name="margin_subbar_size_35">35dp</dimen>
+    <dimen name="margin_subbar_size">35dp</dimen>
+
+
+
+
+
+    <!--
+Refer to App Widget Documentation for margin information
+http://developer.android.com/guide/topics/appwidgets/index.html#CreatingLayout
+    -->
+    <dimen name="widget_margin">8dp</dimen>
 </resources>

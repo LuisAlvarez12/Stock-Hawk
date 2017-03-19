@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/margin_subbar_size"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    >
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/margin_subbar_size"
+    android:gravity="center_horizontal"
+    android:orientation="horizontal"
+    >
+
+    <ImageView
+        android:id="@+id/search_button"
+        android:layout_width="@dimen/margin_subbar_size"
+        android:layout_height="@dimen/margin_subbar_size"
+        android:padding="@dimen/margin_bottom_card"
+        android:scaleType="fitXY"
+        android:src="@drawable/magnify_s" />
+
+    <EditText
+        android:id="@+id/searchkey"
+        android:layout_width="@dimen/margin_card"
+        android:layout_height="match_parent"
+        android:background="@color/white"
+        android:visibility="gone" />
+</LinearLayout>
+<android.support.v4.widget.SwipeRefreshLayout
+android:id="@+id/swipe_refresh"
+android:layout_width="match_parent"
+android:layout_height="match_parent">
+
+<android.support.v7.widget.RecyclerView
+    android:id="@+id/recycler_view"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    />
+
+</android.support.v4.widget.SwipeRefreshLayout>
+    </LinearLayout>
+
+
+
+
+

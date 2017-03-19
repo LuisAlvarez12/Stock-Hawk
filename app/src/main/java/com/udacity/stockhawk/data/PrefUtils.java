@@ -46,6 +46,43 @@ public final class PrefUtils {
         return prefs.getStringSet(stocksKey, new HashSet<String>());
     }
 
+    //get stocks to refresh
+    public static String[] getStocksForWidget(Context context){
+        String[] toRetArray = new String[3];
+        String key = "stock_widget";
+        String key_LeftSideWidget = "widget_left";
+        String key_mainSideWidget = "widget_main";
+        String key_rightSideWidget = "widget_right";
+
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+        toRetArray[0] = preferences.getString(key_LeftSideWidget,context.getResources().getString(R.string.default_stocks_apple));
+        toRetArray[1] = preferences.getString(key_mainSideWidget,context.getResources().getString(R.string.default_stocks_facebook));
+        toRetArray[2] = preferences.getString(key_rightSideWidget,context.getResources().getString(R.string.default_stocks_microsoft));
+        return toRetArray;
+    }
+
+    //get stocks to refresh
+    public static void setStockForWidget(Context context, String symbolToReturn, int position){
+
+        String key_LeftSideWidget = "widget_left";
+        String key_mainSideWidget = "widget_main";
+        String key_rightSideWidget = "widget_right";
+
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+        SharedPreferences.Editor editor = preferences.edit();
+        switch (position) {
+            case 0:
+                editor.putString(key_LeftSideWidget, symbolToReturn);
+                break;
+            case 1:
+                editor.putString(key_mainSideWidget,symbolToReturn);
+                break;
+            case 2:
+                editor.putString(key_rightSideWidget,symbolToReturn);
+                break;
+        }
+        editor.apply();
+    }
 
     //add or remove stock from the list
     private static void editStockPref(Context context, String symbol, Boolean add) {

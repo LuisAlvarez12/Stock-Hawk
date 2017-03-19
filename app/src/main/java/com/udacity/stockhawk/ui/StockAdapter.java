@@ -4,23 +4,18 @@ package com.udacity.stockhawk.ui;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
-import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.GradientDrawable;
 import android.support.v7.widget.RecyclerView;
-import android.text.SpannableString;
-import android.text.SpannableStringBuilder;
-import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.udacity.stockhawk.DetailActivity;
 import com.udacity.stockhawk.R;
 import com.udacity.stockhawk.data.Contract;
-import com.udacity.stockhawk.data.PrefUtils;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -30,8 +25,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import timber.log.Timber;
 
-import static android.icu.lang.UCharacter.GraphemeClusterBreak.V;
-import static com.udacity.stockhawk.R.drawable.percent_change_pill_red;
 import static com.udacity.stockhawk.R.drawable.percent_change_rect_red;
 
 class StockAdapter extends RecyclerView.Adapter<StockAdapter.StockViewHolder> {
@@ -87,10 +80,7 @@ class StockAdapter extends RecyclerView.Adapter<StockAdapter.StockViewHolder> {
     //actual binding to each cursor item
     @Override
     public void onBindViewHolder(StockViewHolder holder, int position) {
-
         cursor.moveToPosition(position);
-
-
 
         //get abbrev
         holder.symbol.setText(cursor.getString(Contract.Quote.POSITION_SYMBOL));
@@ -101,60 +91,23 @@ class StockAdapter extends RecyclerView.Adapter<StockAdapter.StockViewHolder> {
         float rawAbsoluteChange = cursor.getFloat(Contract.Quote.POSITION_ABSOLUTE_CHANGE);
         float percentageChange = cursor.getFloat(Contract.Quote.POSITION_PERCENTAGE_CHANGE);
 
-
-
         String change = dollarFormatWithPlus.format(rawAbsoluteChange);
         String percentage = percentageFormat.format(percentageChange / 100);
         //change color of background based on negative and positive
         if (rawAbsoluteChange > 0) {
+            holder.condition.setTag("positive");
             holder.condition.setBackgroundResource(R.drawable.percent_change_rect_green);
-
-//            SpannableStringBuilder builder = new SpannableStringBuilder();
-//            SpannableString str1= new SpannableString(change);
-//            str1.setSpan(new ForegroundColorSpan(context.getResources().getColor(R.color.material_green_dark)), 0, 1, 0);
-//            builder.append(str1);
-//            holder.change.setText(builder, TextView.BufferType.SPANNABLE);
-            holder.change.setText(change);
-//            builder = new SpannableStringBuilder();
-//            str1= new SpannableString(percentage);
-//            str1.setSpan(new ForegroundColorSpan(context.getResources().getColor(R.color.material_green_dark)), 0, 1, 0);
-//            builder.append(str1);
-//            holder.percentage.setText(builder, TextView.BufferType.SPANNABLE);
-                holder.percentage.setText(percentage);
-
-//            holder.arrows.setLayoutParams(new LinearLayout.LayoutParams(holder.change.getLayoutParams().width,holder.change.getLayoutParams().height));
-            holder.arrows.setImageDrawable(context.getResources().getDrawable(R.drawable.green_arrow));
-
-        } else {
-            holder.condition.setBackgroundResource(percent_change_rect_red);
-
-//            SpannableStringBuilder builder = new SpannableStringBuilder();
-//            SpannableString str1= new SpannableString(change);
-//            str1.setSpan(new ForegroundColorSpan(context.getResources().getColor(R.color.material_red_700)), 0, 1, 0);
-//            builder.append(str1);
-//            holder.change.setText(builder, TextView.BufferType.SPANNABLE);
-//            builder = new SpannableStringBuilder();
-//            str1= new SpannableString(percentage);
-//            str1.setSpan(new ForegroundColorSpan(context.getResources().getColor(R.color.material_red_700)), 0, 1, 0);
-//            builder.append(str1);
-//            holder.percentage.setText(builder, TextView.BufferType.SPANNABLE);
             holder.change.setText(change);
             holder.percentage.setText(percentage);
-//            holder.arrows.setLayoutParams(new LinearLayout.LayoutParams(holder.change.getLayoutParams().width,holder.change.getLayoutParams().height));
+            holder.arrows.setImageDrawable(context.getResources().getDrawable(R.drawable.green_arrow));
+        } else {
+            holder.condition.setTag("negative");
+            holder.condition.setBackgroundResource(percent_change_rect_red);
+            holder.change.setText(change);
+            holder.percentage.setText(percentage);
             holder.arrows.setImageDrawable(context.getResources().getDrawable(R.drawable.red_arrow));
-
         }
-
-
-
-
-
         //will be notified to update if this changes
-
-
-
-
-
     }
 
     //get cursor count
@@ -167,13 +120,11 @@ class StockAdapter extends RecyclerView.Adapter<StockAdapter.StockViewHolder> {
         return count;
     }
 
-
     interface StockAdapterOnClickHandler {
         void onClick(String symbol);
     }
 
     class StockViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-
         //name
         @BindView(R.id.symbol)
         TextView symbol;
@@ -210,10 +161,13 @@ class StockAdapter extends RecyclerView.Adapter<StockAdapter.StockViewHolder> {
             cursor.moveToPosition(adapterPosition);
             int symbolColumn = cursor.getColumnIndex(Contract.Quote.COLUMN_SYMBOL);
             clickHandler.onClick(cursor.getString(symbolColumn));
-            Timber.d("Symbol clicked: %s",cursor.getString(symbolColumn) );
             Intent intent = new Intent(context, DetailActivity.class);
             intent.putExtra("symbol",cursor.getString(symbolColumn));
-            Log.d("logs",cursor.getString(symbolColumn));
+            if(condition.getTag().equals("positive")){
+                intent.putExtra("color",R.color.material_green_700);
+            }else{
+                intent.putExtra("color",R.color.material_red_700);
+            }
             context.startActivity(intent);
 
 
