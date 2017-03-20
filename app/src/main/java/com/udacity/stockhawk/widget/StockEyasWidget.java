@@ -1,14 +1,19 @@
-package com.udacity.stockhawk;
+package com.udacity.stockhawk.widget;
 
+import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
+import android.util.Log;
 import android.widget.RemoteViews;
 
+import com.udacity.stockhawk.R;
 import com.udacity.stockhawk.data.Contract;
 import com.udacity.stockhawk.data.PrefUtils;
 import com.udacity.stockhawk.sync.QuoteSyncJob;
+import com.udacity.stockhawk.widget.WidgetStockSelection;
 
 import static com.udacity.stockhawk.R.id.symbol;
 
@@ -20,9 +25,13 @@ public class StockEyasWidget extends AppWidgetProvider {
     static void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
                                 int appWidgetId) {
         QuoteSyncJob.syncImmediately(context);
+
         CharSequence widgetText = context.getString(R.string.appwidget_text);
         // Construct the RemoteViews object
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget_4x1);
+        views.setOnClickPendingIntent(R.id.widget_condition_holder, centerClickPendingIntent(context));
+        views.setOnClickPendingIntent(R.id.widget_holder_right,rightClickPendingIntent(context) );
+        views.setOnClickPendingIntent(R.id.widget_holder_left, leftClickPendingIntent(context));
 
         String[] selectedStocks = PrefUtils.getStocksForWidget(context);
         initWidgetViews(context, views, selectedStocks);
@@ -30,6 +39,30 @@ public class StockEyasWidget extends AppWidgetProvider {
         // Instruct the widget manager to update the widget
         appWidgetManager.updateAppWidget(appWidgetId, views);
     }
+
+    private static PendingIntent leftClickPendingIntent(Context cntx){
+        Log.d("position","0 pendingintent");
+        Intent intentLeft = new Intent(cntx,WidgetStockSelection.class);
+        intentLeft.putExtra("position",0);
+        PendingIntent configPendingIntent = PendingIntent.getActivity(cntx, 0, intentLeft, PendingIntent.FLAG_UPDATE_CURRENT);
+        return configPendingIntent;
+    }
+
+    private static PendingIntent rightClickPendingIntent( Context cntx){
+        Log.d("position","2 pendingintent");
+        Intent intentRight = new Intent(cntx,WidgetStockSelection.class);
+        intentRight.putExtra("position",2);
+        PendingIntent configPendingIntent = PendingIntent.getActivity(cntx, 0, intentRight, PendingIntent.FLAG_UPDATE_CURRENT);
+        return configPendingIntent;
+    }
+    private static PendingIntent centerClickPendingIntent( Context cntx){
+        Log.d("position","1 pendingintent");
+        Intent intentCenter = new Intent(cntx,WidgetStockSelection.class);
+        intentCenter.putExtra("position",1);
+        PendingIntent configPendingIntent = PendingIntent.getActivity(cntx, 0, intentCenter, PendingIntent.FLAG_UPDATE_CURRENT);
+        return configPendingIntent;
+    }
+
 
     private static void initWidgetViews(Context context, RemoteViews views, String[] selectedStocks) {
         //left widget view
@@ -41,11 +74,11 @@ public class StockEyasWidget extends AppWidgetProvider {
         symbolObject.moveToFirst();
         views.setTextViewText(R.id.symbol_left,symbolObject.getString(Contract.Quote.POSITION_SYMBOL));
         views.setTextViewText(R.id.price_left,symbolObject.getString(Contract.Quote.POSITION_PRICE));
-        float rawAbsoluteChange = symbolObject.getFloat(Contract.Quote.POSITION_ABSOLUTE_CHANGE);
+        float rawAbsoluteChange = Float.parseFloat(symbolObject.getString(Contract.Quote.POSITION_ABSOLUTE_CHANGE));
         if(rawAbsoluteChange>0){
             views.setImageViewResource(R.id.img_arrows_left,R.drawable.green_arrow);
         }else{
-            views.setImageViewResource(R.id.img_arrows_right,R.drawable.red_arrow);
+            views.setImageViewResource(R.id.img_arrows_left,R.drawable.red_arrow);
         }
 
         //middle (main) widget view
@@ -86,6 +119,7 @@ public class StockEyasWidget extends AppWidgetProvider {
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
+
         // There may be multiple widgets active, so update all of them
         for (int appWidgetId : appWidgetIds) {
             updateAppWidget(context, appWidgetManager, appWidgetId);
