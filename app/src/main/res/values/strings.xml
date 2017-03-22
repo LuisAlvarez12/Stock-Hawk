@@ -54,6 +54,7 @@
     <string name="tab_3y" translatable="false">3 Y</string>
     <string name="tab_max" translatable="false">Max</string>
 
+    <string name="cd_google_stock_2">Get stocks news from Google headlines</string>
 
     <string name="cd_google_stock">Get stocks news from Google headlines</string>
     <string name="cd_nasdaq_stock">Get stocks news from Nasdaq headlines</string>
