@@ -4,239 +4,240 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_height="match_parent"
     android:layout_width="match_parent">
-<android.support.design.widget.CoordinatorLayout
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
-    <android.support.design.widget.AppBarLayout
-        android:id="@+id/app_bar_layout"
+    <android.support.design.widget.CoordinatorLayout
+        android:id="@+id/coordinator_detail"
         android:layout_width="match_parent"
-        android:fitsSystemWindows="true"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent">
 
-        <android.support.design.widget.CollapsingToolbarLayout
-            android:id="@+id/collapsing_toolbar"
+        <android.support.design.widget.AppBarLayout
+            android:id="@+id/app_bar_layout"
             android:layout_width="match_parent"
             android:fitsSystemWindows="true"
-            android:layout_height="match_parent"
-            app:layout_scrollFlags="scroll|exitUntilCollapsed"
-            app:contentScrim="?attr/colorPrimary">
+            android:layout_height="wrap_content">
 
-            <LinearLayout
+            <android.support.design.widget.CollapsingToolbarLayout
+                android:id="@+id/collapsing_toolbar"
                 android:layout_width="match_parent"
-                android:orientation="horizontal"
-                android:layout_height="120dp">
-            </LinearLayout>
+                android:fitsSystemWindows="true"
+                android:layout_height="match_parent"
+                app:layout_scrollFlags="scroll|exitUntilCollapsed"
+                app:contentScrim="?attr/colorPrimary">
 
-            <android.support.v7.widget.Toolbar
-                android:id="@+id/toolbar"
-                app:collapseIcon="@drawable/stock_logo"
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                android:paddingStart="@dimen/margin_main_views"
-                android:paddingEnd="@dimen/margin_main_views"
-                app:layout_collapseMode="pin" >
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:orientation="horizontal"
+                    android:layout_height="120dp">
+                </LinearLayout>
 
-            </android.support.v7.widget.Toolbar>
-        </android.support.design.widget.CollapsingToolbarLayout>
-    </android.support.design.widget.AppBarLayout>
+                <android.support.v7.widget.Toolbar
+                    android:id="@+id/toolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize"
+                    android:paddingStart="@dimen/margin_main_views"
+                    android:paddingEnd="@dimen/margin_main_views"
+                    app:layout_collapseMode="pin" >
 
-    <android.support.v4.widget.NestedScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        android:orientation="vertical">
+                </android.support.v7.widget.Toolbar>
+            </android.support.design.widget.CollapsingToolbarLayout>
+        </android.support.design.widget.AppBarLayout>
 
-        <LinearLayout
+        <android.support.v4.widget.NestedScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
             android:orientation="vertical">
 
             <LinearLayout
-               android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/margin_main_views"
-                android:layout_marginTop="@dimen/activity_vertical_margin"
-                android:orientation="horizontal">
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:orientation="vertical"
-                    android:gravity="center"
-                    android:layout_height="wrap_content">
-                <ImageView
-                    android:id="@+id/icon_article"
-                    android:layout_width="80dp"
-                    android:layout_height="80dp"
-                    android:scaleType="fitXY"
-                    android:src="@drawable/news_logo" />
-
-                    <TextView
-                        android:id="@+id/news_google"
-                        android:contentDescription="@string/cd_google_stock"
-                        android:layout_marginTop="@dimen/margin_15_var"
-                        android:textColor="@color/primary_text"
-                        android:layout_width="wrap_content"
-                        android:focusable="true"
-                        android:layout_height="wrap_content"
-                        android:textSize="@dimen/textsize_medium_detail"
-                        android:text="@string/news_google"/>
-                    <TextView
-                        android:id="@+id/news_nasdaq"
-                        android:contentDescription="@string/cd_nasdaq_stock"
-                        android:nextFocusDown="@id/news_google"
-                        android:layout_marginTop="@dimen/margin_15_var"
-                        android:textColor="@color/primary_text"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textSize="@dimen/textsize_medium_detail"
-                        android:text="@string/news_nasdaq"/>
-                    <TextView
-                        android:id="@+id/news_cnn"
-                        android:contentDescription="@string/cd_cnn_stock"
-                        android:layout_marginTop="@dimen/margin_15_var"
-                        android:nextFocusDown="@id/news_nasdaq"
-                        android:textColor="@color/primary_text"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textSize="@dimen/textsize_medium_detail"
-                        android:text="@string/news_cnn"/>
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:layout_marginStart="@dimen/margin_detail_icons"
-
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:id="@+id/title_loss_gain_percentage"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="left"
-                        android:text="@string/title_loss_gain_percentage"
-                        android:contentDescription="@string/cd_title_loss_gain_percentage"
-                        android:textColor="@color/secondary_text"
-                        android:textSize="@dimen/textsize_small_detail" />
-
-                    <TextView
-                        android:id="@+id/tv_detail_percentage"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:nextFocusDown="@id/title_loss_gain_percentage"
-                        android:gravity="left"
-                        android:text=""
-                        android:textColor="@color/primary_text"
-                        android:textSize="@dimen/textsize_medium_detail" />
-
-                    <TextView
-                        android:layout_marginTop="@dimen/margin_15_var"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:nextFocusDown="@id/tv_detail_percentage"
-                        android:gravity="left"
-                        android:text="@string/title_loss_gain_actual"
-                        android:contentDescription="@string/title_loss_gain_actual"
-                        android:id="@+id/title_loss_gain_absolute"
-                        android:textColor="@color/secondary_text"
-                        android:textSize="@dimen/textsize_small_detail" />
-
-                    <TextView
-                        android:id="@+id/tv_detail_actual"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="left"
-                        android:nextFocusDown="@id/title_loss_gain_absolute"
-                        android:text=""
-                        android:textColor="@color/primary_text"
-                        android:textSize="@dimen/textsize_medium_detail" />
-
-                    <TextView
-                        android:layout_marginTop="@dimen/activity_vertical_margin"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:contentDescription="@string/title_high_low"
-                        android:nextFocusDown="@id/tv_detail_actual"
-                        android:gravity="left"
-                        android:text="@string/title_high_low"
-                        android:id="@+id/title_30_day_high"
-                        android:textColor="@color/secondary_text"
-                        android:textSize="@dimen/textsize_small_detail" />
-
-                    <TextView
-                        android:nextFocusDown="@id/title_30_day_high"
-                        android:id="@+id/tv_detail"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="left"
-                        android:text=""
-                        android:textColor="@color/primary_text"
-                        android:textSize="@dimen/textsize_medium_detail" />
-                </LinearLayout>
-
-
-            </LinearLayout>
-
-            <!--</LinearLayout>-->
-
-            <android.support.v7.widget.CardView
-                android:id="@+id/cv"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/margin_main_views"
-                android:layout_marginStart="@dimen/margin_main_views"
-                android:layout_marginEnd="@dimen/margin_main_views"
-                app:cardBackgroundColor="@color/cardview_light_background">
-
+                android:orientation="vertical">
 
                 <LinearLayout
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
+                    android:gravity="center"
+                    android:layout_margin="@dimen/margin_main_views"
+                    android:layout_marginTop="@dimen/activity_vertical_margin"
+                    android:orientation="horizontal">
 
-                    <android.support.design.widget.TabLayout
-                        android:id="@+id/tab_layout1"
-                        android:layout_width="match_parent"
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        android:layout_height="wrap_content">
+                        <ImageView
+                            android:id="@+id/icon_article"
+                            android:layout_width="@dimen/margin_card"
+                            android:layout_height="@dimen/margin_card"
+                            android:scaleType="fitXY"
+                            android:src="@drawable/news_logo" />
+
+                        <TextView
+                            android:id="@+id/news_google"
+                            android:contentDescription="@string/cd_google_stock"
+                            android:layout_marginTop="@dimen/margin_15_var"
+                            android:textColor="@color/primary_text"
+                            android:layout_width="wrap_content"
+                            android:focusable="true"
+                            android:layout_height="wrap_content"
+                            android:textSize="@dimen/textsize_medium_detail"
+                            android:text="@string/news_google"/>
+                        <TextView
+                            android:id="@+id/news_nasdaq"
+                            android:contentDescription="@string/cd_nasdaq_stock"
+                            android:nextFocusDown="@id/news_google"
+                            android:layout_marginTop="@dimen/margin_15_var"
+                            android:textColor="@color/primary_text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="@dimen/textsize_medium_detail"
+                            android:text="@string/news_nasdaq"/>
+                        <TextView
+                            android:id="@+id/news_cnn"
+                            android:contentDescription="@string/cd_cnn_stock"
+                            android:layout_marginTop="@dimen/margin_15_var"
+                            android:nextFocusDown="@id/news_nasdaq"
+                            android:textColor="@color/primary_text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="@dimen/textsize_medium_detail"
+                            android:text="@string/news_cnn"/>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
                         android:layout_height="wrap_content"
-                        android:background="@color/cardview_light_background"
-                        android:minHeight="?attr/actionBarSize"
-                        android:theme="@style/ThemeOverlay.AppCompat.Light" />
+                        android:gravity="center"
+                        android:layout_marginStart="@dimen/margin_detail_icons"
+                        android:orientation="vertical">
 
-                    <TextView
-                        android:id="@+id/tv_sparkview"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="@dimen/margin_sub_views"
-                        android:gravity="left"
-                        android:text=" \n "
-                        android:textColor="@color/primary_text"
-                        android:textSize="@dimen/textsize_medium_detail" />
+                        <TextView
+                            android:id="@+id/title_loss_gain_percentage"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="left"
+                            android:text="@string/title_loss_gain_percentage"
+                            android:contentDescription="@string/cd_title_loss_gain_percentage"
+                            android:textColor="@color/secondary_text"
+                            android:textSize="@dimen/textsize_small_detail" />
 
-                    <FrameLayout
-                        android:layout_width="match_parent"
+                        <TextView
+                            android:id="@+id/tv_detail_percentage"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:nextFocusDown="@id/title_loss_gain_percentage"
+                            android:gravity="left"
+                            android:text=""
+                            android:textColor="@color/primary_text"
+                            android:textSize="@dimen/textsize_medium_detail" />
+
+                        <TextView
+                            android:layout_marginTop="@dimen/margin_15_var"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:nextFocusDown="@id/tv_detail_percentage"
+                            android:gravity="left"
+                            android:text="@string/title_loss_gain_actual"
+                            android:contentDescription="@string/title_loss_gain_actual"
+                            android:id="@+id/title_loss_gain_absolute"
+                            android:textColor="@color/secondary_text"
+                            android:textSize="@dimen/textsize_small_detail" />
+
+                        <TextView
+                            android:id="@+id/tv_detail_actual"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="left"
+                            android:nextFocusDown="@id/title_loss_gain_absolute"
+                            android:text=""
+                            android:textColor="@color/primary_text"
+                            android:textSize="@dimen/textsize_medium_detail" />
+
+                        <TextView
+                            android:layout_marginTop="@dimen/activity_vertical_margin"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:contentDescription="@string/title_high_low"
+                            android:nextFocusDown="@id/tv_detail_actual"
+                            android:gravity="left"
+                            android:text="@string/title_high_low"
+                            android:id="@+id/title_30_day_high"
+                            android:textColor="@color/secondary_text"
+                            android:textSize="@dimen/textsize_small_detail" />
+
+                        <TextView
+                            android:nextFocusDown="@id/title_30_day_high"
+                            android:id="@+id/tv_detail"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="left"
+                            android:text=""
+                            android:textColor="@color/primary_text"
+                            android:textSize="@dimen/textsize_medium_detail" />
+                    </LinearLayout>
+
+
+                </LinearLayout>
+
+                <!--</LinearLayout>-->
+
+                <android.support.v7.widget.CardView
+                    android:id="@+id/cv"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/margin_main_views"
+                    android:layout_marginStart="@dimen/margin_main_views"
+                    android:layout_marginEnd="@dimen/margin_main_views"
+                    app:cardBackgroundColor="@color/cardview_light_background">
+
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:orientation="vertical">
 
-                        <com.robinhood.spark.SparkView
-                            android:id="@+id/sparkview"
-                            android:layout_width="wrap_content"
-                            android:layout_height="@dimen/size_sparkview"
+                        <android.support.design.widget.TabLayout
+                            android:id="@+id/tab_layout1"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@color/cardview_light_background"
+                            android:minHeight="?attr/actionBarSize"
+                            android:theme="@style/ThemeOverlay.AppCompat.Light" />
+
+                        <TextView
+                            android:id="@+id/tv_sparkview"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
                             android:layout_margin="@dimen/margin_sub_views"
-                            app:spark_animateChanges="true"
-                            app:spark_lineColor="@color/material_green_dark"
-                            app:spark_scrubEnabled="true" />
+                            android:gravity="left"
+                            android:text=" \n "
+                            android:textColor="@color/primary_text"
+                            android:textSize="@dimen/textsize_medium_detail" />
 
-                    </FrameLayout>
-                </LinearLayout>
-            </android.support.v7.widget.CardView>
-        </LinearLayout>
+                        <FrameLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
 
-    </android.support.v4.widget.NestedScrollView>
-</android.support.design.widget.CoordinatorLayout>
+                            <com.robinhood.spark.SparkView
+                                android:id="@+id/sparkview"
+                                android:layout_width="wrap_content"
+                                android:layout_height="@dimen/size_sparkview"
+                                android:layout_margin="@dimen/margin_sub_views"
+                                app:spark_animateChanges="true"
+                                app:spark_lineColor="@color/material_green_dark"
+                                app:spark_scrubEnabled="true" />
+
+                        </FrameLayout>
+                    </LinearLayout>
+                </android.support.v7.widget.CardView>
+            </LinearLayout>
+
+        </android.support.v4.widget.NestedScrollView>
+    </android.support.design.widget.CoordinatorLayout>
 </FrameLayout>
 
 

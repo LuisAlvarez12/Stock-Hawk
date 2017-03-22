@@ -13,6 +13,7 @@ import com.udacity.stockhawk.R;
 import com.udacity.stockhawk.data.Contract;
 import com.udacity.stockhawk.data.PrefUtils;
 import com.udacity.stockhawk.sync.QuoteSyncJob;
+import com.udacity.stockhawk.ui.MainActivity;
 import com.udacity.stockhawk.widget.WidgetStockSelection;
 
 import static com.udacity.stockhawk.R.id.symbol;
@@ -24,24 +25,17 @@ public class StockEyasWidget extends AppWidgetProvider {
 
     static void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
                                 int appWidgetId) {
+
         QuoteSyncJob.syncImmediately(context);
-
         CharSequence widgetText = context.getString(R.string.appwidget_text);
-        // Construct the RemoteViews object
-
-
-
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget_4x1);
         views.setOnClickPendingIntent(R.id.widget_condition_holder, centerClickPendingIntent(context));
         views.setOnClickPendingIntent(R.id.widget_holder_right,rightClickPendingIntent(context) );
         views.setOnClickPendingIntent(R.id.widget_holder_left, leftClickPendingIntent(context));
 
-
-
         String[] selectedStocks = PrefUtils.getStocksForWidget(context);
         initWidgetViews(context, views, selectedStocks);
 
-        // Instruct the widget manager to update the widget
         appWidgetManager.updateAppWidget(appWidgetId, views);
     }
     private static PendingIntent centerClickPendingIntent( Context cntx){
@@ -121,7 +115,12 @@ public class StockEyasWidget extends AppWidgetProvider {
 
         // There may be multiple widgets active, so update all of them
         for (int appWidgetId : appWidgetIds) {
-            updateAppWidget(context, appWidgetManager, appWidgetId);
+            if (PrefUtils.isNetworkAvailable(context)) {
+                updateAppWidget(context, appWidgetManager, appWidgetId);
+            }else{
+                Intent toApp = new Intent(context, MainActivity.class);
+                context.startActivity(toApp);
+            }
         }
     }
 

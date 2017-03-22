@@ -8,14 +8,14 @@
         android:id="@+id/widget_holder_left"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_marginBottom="5dp"
+        android:layout_marginBottom="@dimen/margin_bottom_card"
         android:layout_weight="1"
         android:background="@drawable/card_left"
-        android:elevation="5dp"
+        android:elevation="@dimen/margin_bottom_card"
         android:clickable="true"
         android:gravity="center"
         android:orientation="vertical"
-        android:padding="5dp">
+        android:padding="@dimen/margin_bottom_card">
 
         <TextView
             android:id="@+id/symbol_left"
@@ -23,7 +23,7 @@
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
             android:textColor="@color/primary_text"
-            android:textSize="18sp"
+            android:textSize="@dimen/textsize_small_detail"
 
             />
 
@@ -47,21 +47,29 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/widget_condition_holder"
         android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
         android:background="@color/cardview_light_background"
+        android:orientation="vertical"
+        android:layout_height="match_parent"
+        android:layout_weight="1">
+
+    <LinearLayout
+        android:layout_marginTop="@dimen/margin_bottom_card"
+        android:id="@+id/widget_condition_holder"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/material_green_700"
         android:clickable="true"
-        android:elevation="5dp"
+        android:elevation="@dimen/margin_bottom_card"
         android:orientation="vertical">
+
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="5dp"
+            android:layout_marginTop="@dimen/margin_bottom_card"
             android:gravity="center_horizontal"
-            android:elevation="5dp"
+            android:elevation="@dimen/margin_bottom_card"
             android:orientation="vertical">
 
             <TextView
@@ -71,7 +79,7 @@
                 android:layout_weight="1"
                 android:gravity="center"
                 android:textColor="@color/white"
-                android:textSize="30sp"
+                android:textSize="@dimen/textsize_medium_detail"
                 android:textStyle="bold" />
 
             <LinearLayout
@@ -88,7 +96,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:gravity="center"
-                    android:textSize="20sp"
+                    android:textSize="@dimen/textsize_small_medium_detail"
                     android:textStyle="bold" />
 
                 <ImageView
@@ -101,19 +109,21 @@
         </LinearLayout>
     </LinearLayout>
 
+    </LinearLayout>
+
 
     <LinearLayout
         android:id="@+id/widget_holder_right"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_marginBottom="5dp"
+        android:layout_marginBottom="@dimen/margin_bottom_card"
         android:layout_weight="1"
         android:background="@drawable/card_right"
-        android:elevation="5dp"
+        android:elevation="@dimen/margin_bottom_card"
         android:clickable="true"
         android:gravity="center"
         android:orientation="vertical"
-        android:padding="5dp"
+        android:padding="@dimen/margin_bottom_card"
 
         >
 
@@ -123,7 +133,7 @@
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
             android:textColor="@color/primary_text"
-            android:textSize="18sp" />
+            android:textSize="@dimen/textsize_small_detail" />
 
         <TextView
             android:id="@+id/price_right"

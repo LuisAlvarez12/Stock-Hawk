@@ -41,14 +41,26 @@
 
     <string name="title_loss_gain_actual">Loss/Gain Actual</string>
 
-    <string name="news_google">Google</string>
-    <string name="news_nasdaq">Nasdaq</string>
-    <string name="news_cnn">CNN</string>
+    <string name="not_any">n/a</string>
+
+
+    <string name="news_google" translatable="false">Google</string>
+    <string name="news_nasdaq" translatable="false">Nasdaq</string>
+    <string name="news_cnn" translatable="false">CNN</string>
+
+    <string name="tab_d" translatable="false">D</string>
+    <string name="tab_w" translatable="false">W</string>
+    <string name="tab_m" translatable="false">M</string>
+    <string name="tab_3y" translatable="false">3 Y</string>
+    <string name="tab_max" translatable="false">Max</string>
+
 
     <string name="cd_google_stock">Get stocks news from Google headlines</string>
     <string name="cd_nasdaq_stock">Get stocks news from Nasdaq headlines</string>
     <string name="cd_cnn_stock">Get stocks news from CNN headlines</string>
     <string name="cd_title_loss_gain_percentage">Loss/Gain percentage</string>
+
+    <string name="invalid_stock">This stock is not reachable. Try another?</string>
 
 
     <string name="empty_forecast_list">No Weather Information Available</string>

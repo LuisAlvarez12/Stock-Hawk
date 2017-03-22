@@ -26,8 +26,6 @@ public class WidgetRightStock extends AppCompatActivity {
         setContentView(R.layout.activity_widget_stock_selection);
         ButterKnife.bind(this);
 
-        Log.d("position","working in right");
-
         int positionOfWidgetSection =2;
 
         Cursor symbolObject = getContentResolver().query(

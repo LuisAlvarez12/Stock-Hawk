@@ -10,6 +10,8 @@ import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.Loader;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -98,7 +100,7 @@ public class DetailFragment extends android.support.v4.app.Fragment {
     @BindView(R.id.toolbar)
     Toolbar toolbar;
 
-
+//High and low textview setup
     private String getHighLowThirtyDays(){
         String[] listOfDailyCloses= symbolObject.getString(Contract.Quote.POSITION_HISTORY_DAILY_CLOSE).split(",");
         String[] listOfDailyDates = symbolObject.getString(Contract.Quote.POSITION_HISTORY_DAILY_DATES).split(",");
@@ -119,31 +121,25 @@ public class DetailFragment extends android.support.v4.app.Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-//        return super.onCreateView(inflater, container, savedInstanceState);
         View rootView = inflater.inflate(R.layout.fragment_detail, container, false);
         ButterKnife.bind(this, rootView);
-//        YoYo.with(Techniques.RollIn)
-//                .duration(2000)
-//                .repeat(1)
-//                .playOn(rootView.findViewById(R.id.tittles));
         collapsingtoolbar.setContentScrimColor(getResources().getColor(getActivity().getIntent().getIntExtra("color",R.color.material_green_700)));
         toolbar.setBackgroundColor(getResources().getColor(getActivity().getIntent().getIntExtra("color",R.color.material_green_700)));
         appBarLayout.setBackgroundColor(getResources().getColor(getActivity().getIntent().getIntExtra("color",R.color.material_green_700)));
 
-
-            CreateInitCursor();
-
+        CreateInitCursor();
         lineGraph.setLineColor(getResources().getColor(getActivity().getIntent().getIntExtra("color", R.color.material_green_700)));
 
         //init tabs
-        tabLayout.addTab(tabLayout.newTab().setText("D"));
-        tabLayout.addTab(tabLayout.newTab().setText("W"));
-        tabLayout.addTab(tabLayout.newTab().setText("M"));
-        tabLayout.addTab(tabLayout.newTab().setText("3 Y"));
-        tabLayout.addTab(tabLayout.newTab().setText("Max"));
+        tabLayout.addTab(tabLayout.newTab().setText(getActivity().getString(R.string.tab_d)));
+        tabLayout.addTab(tabLayout.newTab().setText(getActivity().getString(R.string.tab_w)));
+        tabLayout.addTab(tabLayout.newTab().setText(getActivity().getString(R.string.tab_m)));
+        tabLayout.addTab(tabLayout.newTab().setText(getActivity().getString(R.string.tab_3y)));
+        tabLayout.addTab(tabLayout.newTab().setText(getActivity().getString(R.string.tab_max)));
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
         return rootView;
     }
+
 
     private float[] cursorToAdapterSelection(String dates, String closings) {
         String[] historyClosings = closings.split(",");
@@ -158,6 +154,7 @@ public class DetailFragment extends android.support.v4.app.Fragment {
     }
 
 
+    //cursor data setting
     private void CreateInitCursor() {
         args[0] = getActivity().getIntent().getStringExtra("symbol");
         List contractlist = Contract.Quote.QUOTE_COLUMNS;
@@ -179,19 +176,20 @@ public class DetailFragment extends android.support.v4.app.Fragment {
             tvActualIndicator.setText("-" + symbolObject.getString(Contract.Quote.POSITION_ABSOLUTE_CHANGE).replace('-','$'));
         }else {
             tvActualIndicator.setText("$" + symbolObject.getString(Contract.Quote.POSITION_ABSOLUTE_CHANGE));
-
         }
         tvActualIndicator.setContentDescription("$" + symbolObject.getString(Contract.Quote.POSITION_ABSOLUTE_CHANGE));
-//        tv_price.setText("$"+symbolObject.getString(Contract.Quote.POSITION_PRICE));
         if(PrefUtils.isNetworkAvailable(getActivity())) {
             Syncer fetchHistoricalData = new Syncer();
             fetchHistoricalData.execute();
         }else{
             Snackbar snackbar = Snackbar
-                    .make(coordinator_detail, getActivity().getString(R.string.error_no_network), Snackbar.LENGTH_LONG);
+                    .make(coordinator_detail, getActivity().getString(R.string.error_no_network), Snackbar.LENGTH_INDEFINITE);
             snackbar.show();
+            tv_highLowThirty.setText(getActivity().getString(R.string.not_any));
         }
     }
+
+
 
     public class Syncer extends AsyncTask<Void, Void, Void> {
         @Override
@@ -219,7 +217,6 @@ public class DetailFragment extends android.support.v4.app.Fragment {
             lineGraph.setAdapter(sparkLineAdapter);
             TabLayout.Tab tab = tabLayout.getTabAt(0);
             tab.select();
-
             tv_highLowThirty.setText(getHighLowThirtyDays());
 
         }
@@ -234,8 +231,9 @@ public class DetailFragment extends android.support.v4.app.Fragment {
         }
     }
 
-    private void InitListeners(final TextView graphLabel) {
 
+    //listerners for scrubbing graph and tab select
+    private void InitListeners(final TextView graphLabel) {
 
         lineGraph.setScrubListener(new SparkView.OnScrubListener() {
             @Override
@@ -250,7 +248,7 @@ public class DetailFragment extends android.support.v4.app.Fragment {
                                     Long.parseLong(
                                             datesArray[(datesArray.length - 1) - sparkLineAdapter.getPosition()]),
                                     "MM/dd/yyyy")
-                                    + "\n" + value;
+                                    + "\n" + "$"+value;
                     graphLabel.setText(val);
                     graphLabel.setContentDescription(val);
                     lastScrubbedValue = val;
@@ -259,7 +257,6 @@ public class DetailFragment extends android.support.v4.app.Fragment {
                 }
             }
         });
-
 
         news_google.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -338,5 +335,7 @@ public class DetailFragment extends android.support.v4.app.Fragment {
             }
         });
     }
+
+
 }
 

@@ -49,6 +49,7 @@ import yahoofinance.Stock;
 import yahoofinance.YahooFinance;
 import yahoofinance.quotes.stock.StockQuote;
 
+import static android.R.id.message;
 import static android.icu.lang.UCharacter.GraphemeClusterBreak.V;
 import static com.udacity.stockhawk.R.id.symbol;
 import static com.udacity.stockhawk.R.string.search;
@@ -73,46 +74,36 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     @BindView(R.id.search_button)
     ImageView search;
 
-    @BindView(R.id.searchkey)
-    EditText searchkey;
-
     @BindView(R.id.swipe_refresh)
     SwipeRefreshLayout swipeRefreshLayout;
 
-    @BindView(R.id.empty)
-    TextView error;
+    private Snackbar snackbar;
 
 
     private StockAdapter adapter;
 
-
-    //start: log class
-    //todo: detailactivity
     @Override
     public void onClick(String symbol) {
-        Timber.d("Symbol clicked: %s", symbol);
+
     }
 
     private float dX, dY;
     private boolean ticker = false;
 
-
-
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-//        error = (TextView)findViewById(R.id.empty);
-
             Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
             setSupportActionBar(toolbar);
             getSupportActionBar().setDisplayShowTitleEnabled(false);
             ButterKnife.bind(this);
-
+            snackbar = Snackbar
+                .make(coordinatorLayout, "", Snackbar.LENGTH_INDEFINITE);
             search.setOnClickListener(new View.OnClickListener() {
                                           @Override
                                           public void onClick(View v) {
-                                              button(error);
+                                              button(search);
                                           }
                                       }
             );
@@ -153,27 +144,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     }
 
-    private void updateEmptyView(){
-        Log.d("empty","Update empty started");
-        if (adapter.getItemCount()==0){
-            if(error!=null){
-                Log.d("empty","Update empty tv not null");
-                int message = R.string.empty_forecast_list;
-                if(!networkUp()){
-                    message = R.string.empty_forecast_list_no_network;
-                }
-                error.setText(getString(message));
-                Log.d("empty",getString(message));
-
-            }
-        }else{
-            if(error!=null) {
-                error.setVisibility(View.GONE);
-            }
-        }
-
-    }
-
     //check if network is currently active, returns bool for addstock
     private boolean networkUp() {
         ConnectivityManager cm =
@@ -198,53 +168,50 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         //if no network and nothing in the adapter to output
         if (!networkUp() && adapter.getItemCount() == 0) {
             swipeRefreshLayout.setRefreshing(false);
-            error.setText(getString(R.string.error_no_network));
-            error.setVisibility(View.VISIBLE);
+            snackbar = Snackbar
+                    .make(coordinatorLayout, getString(R.string.error_no_network), Snackbar.LENGTH_INDEFINITE);
+            snackbar.show();
             //if network is not available
         } else if (!networkUp()) {
             swipeRefreshLayout.setRefreshing(false);
-            Toast.makeText(this, R.string.toast_no_connectivity, Toast.LENGTH_LONG).show();
-            error.setVisibility(View.VISIBLE);
+            snackbar = Snackbar
+                    .make(coordinatorLayout,  getString(R.string.toast_no_connectivity), Snackbar.LENGTH_INDEFINITE);
+            snackbar.show();
             //if there are no stocks in the preferences
         } else if (PrefUtils.getStocks(this).size() == 0) {
             swipeRefreshLayout.setRefreshing(false);
-            error.setText(getString(R.string.error_no_stocks));
-            error.setVisibility(View.VISIBLE);
+            snackbar = Snackbar
+                    .make(coordinatorLayout, getString(R.string.error_no_stocks), Snackbar.LENGTH_INDEFINITE);
+            snackbar.show();
         } else {
-//            Log.d("empty","good refresh");
-//            QuoteSyncJob.syncImmediately(this);
-//            getSupportLoaderManager().initLoader(STOCK_LOADER, null, this);
 
         }
     }
-
 
     public void button(@SuppressWarnings("UnusedParameters") View view) {
         new AddStockDialog().show(getFragmentManager(), "StockDialogFragment");
     }
 
-
-
-
-
     //add stock
     void addStock(String symbol) {
         //string valid and not empty
         if (symbol != null && !symbol.isEmpty()) {
-
             //if there is a valid netowrk conenction
             if (networkUp()) {
-                //???
                 swipeRefreshLayout.setRefreshing(true);
             } else {
                 //display error for refreshing
                 String message = getString(R.string.toast_stock_added_no_connectivity, symbol);
-                Toast.makeText(this, message, Toast.LENGTH_LONG).show();
+                 snackbar = Snackbar
+                        .make(coordinatorLayout, message, Snackbar.LENGTH_INDEFINITE);
+                snackbar.show();
             }
-            //add stock to list of abbreviations
-            //sync the layout
+
             StockValidation stockValidation = new StockValidation();
             stockValidation.execute(symbol);
+            //add stock to list of abbreviations
+            //sync the layout
+
         }
     }
 
@@ -259,15 +226,9 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 Stock stock = quotes.get(params[0]);
                 StockQuote quote = stock.getQuote();
                 if (quote.getPrice() != null) {
-                    Log.d("stockfetch", "STOCK ACCEPTED");
                     PrefUtils.addStock(getApplicationContext(), params[0]);
                     validStock=true;
                 } else {
-                    Log.d("stockfetch", "FALSE STOCK");
-                    Snackbar snackbar = Snackbar
-                            .make(coordinatorLayout, "false stock!", Snackbar.LENGTH_INDEFINITE);
-
-                    snackbar.show();
                     validStock=false;
                 }
             } catch (IOException e) {
@@ -276,21 +237,17 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             return null;
         }
 
-
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
             if (validStock){
-                Log.d("stockfetch", "VALID STOCK SUBMITTED");
                 QuoteSyncJob.syncImmediately(getApplicationContext());
             swipeRefreshLayout.setRefreshing(false);
 
             }else{
-                Log.d("stockfetch", "STOCK SUCCESSFULLY EXITED");
                 swipeRefreshLayout.setRefreshing(false);
                 Snackbar snackbar = Snackbar
-                        .make(coordinatorLayout, "Stock is invalid", Snackbar.LENGTH_LONG);
-
+                        .make(coordinatorLayout, getString(R.string.invalid_stock), Snackbar.LENGTH_LONG);
                 snackbar.show();
 
             }
@@ -298,24 +255,9 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     }
 
 
-
-
-    //change icon based on condition
-    private void setDisplayModeMenuItemIcon(MenuItem item) {
-
-        if (PrefUtils.getDisplayMode(this).equals(getString(R.string.pref_display_mode_absolute_key))) {
-            item.setIcon(R.drawable.ic_percentage);
-        } else {
-            item.setIcon(R.drawable.ic_dollar);
-        }
-    }
-
     //menu including the current unit condition
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-//        getMenuInflater().inflate(R.menu.main_activity_settings, menu);
-//        MenuItem item = menu.findItem(R.id.action_change_units);
-//        setDisplayModeMenuItemIcon(item);
         return true;
     }
 
@@ -323,15 +265,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        if (id == R.id.action_change_units) {
-            //change the current condition of units
-            PrefUtils.toggleDisplayMode(this);
-            //switch key item icon where the settings would be
-            setDisplayModeMenuItemIcon(item);
-            //notify the adapter
-            adapter.notifyDataSetChanged();
-            return true;
-        }
         return super.onOptionsItemSelected(item);
     }
 
@@ -352,7 +285,9 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         swipeRefreshLayout.setRefreshing(false);
         //if nothing is available, make invis
         if (data.getCount() != 0) {
-            error.setVisibility(View.GONE);
+            if(snackbar.isShown()) {
+                snackbar.dismiss();
+            }
         }
         adapter.setCursor(data);
     }
@@ -364,7 +299,4 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         swipeRefreshLayout.setRefreshing(false);
         adapter.setCursor(null);
     }
-
-
-
     }

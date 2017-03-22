@@ -31,7 +31,6 @@
 
             <android.support.v7.widget.Toolbar
                 android:id="@+id/toolbar"
-                app:collapseIcon="@drawable/stock_logo"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 android:paddingStart="@dimen/margin_main_views"
@@ -56,6 +55,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+
                 android:layout_margin="@dimen/margin_main_views"
                 android:layout_marginTop="@dimen/activity_vertical_margin"
                 android:orientation="horizontal">
@@ -66,8 +66,8 @@
                     android:layout_height="wrap_content">
                 <ImageView
                     android:id="@+id/icon_article"
-                    android:layout_width="80dp"
-                    android:layout_height="80dp"
+                    android:layout_width="@dimen/margin_card"
+                    android:layout_height="@dimen/margin_card"
                     android:scaleType="fitXY"
                     android:src="@drawable/news_logo" />
 

@@ -30,7 +30,6 @@ public class WidgetStockSelection extends AppCompatActivity {
         ButterKnife.bind(this);
         if(PrefUtils.isNetworkAvailable(this))
         QuoteSyncJob.syncImmediately(this);
-        Log.d("position","working in center");
 
         int positionOfWidgetSection = 1;
 

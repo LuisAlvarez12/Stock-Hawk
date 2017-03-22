@@ -17,10 +17,13 @@
     <dimen name="margin_card">80dp</dimen>
     <dimen name="margin_start_collapsing">48dp</dimen>
     <dimen name="margin_end_collapsing">64dp</dimen>
+    <dimen name="margin_edittext">4dp</dimen>
+    <dimen name="margin_edittext_bottom">16dp</dimen>
 
 
     <!--text sizes-->
     <dimen name="textsize_small_detail">18sp</dimen>
+    <dimen name="textsize_small_medium_detail">20sp</dimen>
     <dimen name="textsize_medium_detail">30sp</dimen>
     <dimen name="textsize_medium_large_detail">40sp</dimen>
     <dimen name="textsize_large_detail">50sp</dimen>
@@ -28,6 +31,7 @@
 
     <!--layout sizes-->
     <dimen name="size_linebreak_view">2dp</dimen>
+
     <dimen name="size_large_container_view">250dp</dimen>
     <dimen name="size_sparkview">350dp</dimen>
     <dimen name="margin_subbar_size_35">35dp</dimen>
