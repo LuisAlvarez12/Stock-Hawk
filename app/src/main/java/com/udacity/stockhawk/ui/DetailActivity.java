@@ -7,18 +7,22 @@ import android.support.v7.app.AppCompatActivity;
 import com.udacity.stockhawk.R;
 import com.udacity.stockhawk.fragments.DetailFragment;
 
-import static android.R.attr.fragment;
-
-
 public class DetailActivity extends AppCompatActivity {
-    @Override
+    private DetailFragment fileDetailsFragment;
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
-        FragmentManager fragmentManager = getFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.add(R.id.fragment_detail_holder, new DetailFragment());
-        fragmentTransaction.commit();
+        if (savedInstanceState == null) {
+            android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
+            android.support.v4.app.FragmentTransaction fragmentTransaction = fragmentManager
+                    .beginTransaction();
+            fileDetailsFragment = new DetailFragment();
+            fragmentTransaction.add(R.id.fragment_detail_holder, fileDetailsFragment);
+            fragmentTransaction.commit();
+        } else {
+            fileDetailsFragment = (DetailFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_detail_holder);
+        }
     }
 }
 

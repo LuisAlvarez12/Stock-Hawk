@@ -5,7 +5,6 @@
     android:layout_height="match_parent"
     android:layout_width="match_parent">
 <android.support.design.widget.CoordinatorLayout
-    android:id="@+id/coordinator_detail"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -54,15 +53,17 @@
             android:orientation="vertical">
 
             <LinearLayout
-                android:layout_width="match_parent"
+               android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/margin_main_views"
                 android:layout_marginTop="@dimen/activity_vertical_margin"
                 android:orientation="horizontal">
 
                 <LinearLayout
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
                     android:orientation="vertical"
+                    android:gravity="center"
                     android:layout_height="wrap_content">
                 <ImageView
                     android:id="@+id/icon_article"
@@ -101,13 +102,12 @@
                         android:layout_height="wrap_content"
                         android:textSize="@dimen/textsize_medium_detail"
                         android:text="@string/news_cnn"/>
-
                 </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="0dp"
+                    android:layout_weight="1"
                     android:layout_height="wrap_content"
-                    android:layout_weight="2"
                     android:gravity="center"
                     android:layout_marginStart="@dimen/margin_detail_icons"
 

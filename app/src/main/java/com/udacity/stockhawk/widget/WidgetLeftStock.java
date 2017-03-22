@@ -10,15 +10,11 @@ import android.util.Log;
 import com.udacity.stockhawk.R;
 import com.udacity.stockhawk.SparkLineAdapter.SymbolAdapter;
 import com.udacity.stockhawk.data.Contract;
-import com.udacity.stockhawk.data.PrefUtils;
-import com.udacity.stockhawk.sync.QuoteSyncJob;
-
-import java.util.Set;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class WidgetStockSelection extends AppCompatActivity {
+public class WidgetLeftStock extends AppCompatActivity {
 
     @BindView(R.id.widget_stock_selection)
     RecyclerView stockList;
@@ -26,13 +22,12 @@ public class WidgetStockSelection extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_widget_stock_selection);
+        setContentView(R.layout.activity_widget_left_stock);
         ButterKnife.bind(this);
-        if(PrefUtils.isNetworkAvailable(this))
-        QuoteSyncJob.syncImmediately(this);
-        Log.d("position","working in center");
 
-        int positionOfWidgetSection = 1;
+        Log.d("position","working in left");
+
+        int positionOfWidgetSection = 0;
 
         Cursor symbolObject = getContentResolver().query(
                 Contract.Quote.URI,

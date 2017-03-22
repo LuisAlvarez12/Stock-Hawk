@@ -31,13 +31,28 @@
 
 
     <string name="search">Search</string>
-    <string name="title_activity_detail"  translatable="false">DetailActivity</string>
-    <string name="appwidget_text"  translatable="false">EXAMPLE</string>
+    <string name="title_activity_detail" translatable="false">DetailActivity</string>
+    <string name="appwidget_text" translatable="false">EXAMPLE</string>
     <string name="add_widget" translatable="false">Add widget</string>
 
-    <string name="default_highlow_value"  translatable="false">$123456.78</string>
-    <string name="title_high_low">High/Low</string>
+    <string name="default_highlow_value" translatable="false">$123456.78</string>
+    <string name="title_high_low">30 day high</string>
     <string name="title_loss_gain_percentage">Loss/Gain %</string>
+
     <string name="title_loss_gain_actual">Loss/Gain Actual</string>
+
+    <string name="news_google">Google</string>
+    <string name="news_nasdaq">Nasdaq</string>
+    <string name="news_cnn">CNN</string>
+
+    <string name="cd_google_stock">Get stocks news from Google headlines</string>
+    <string name="cd_nasdaq_stock">Get stocks news from Nasdaq headlines</string>
+    <string name="cd_cnn_stock">Get stocks news from CNN headlines</string>
+    <string name="cd_title_loss_gain_percentage">Loss/Gain percentage</string>
+
+
+    <string name="empty_forecast_list">No Weather Information Available</string>
+    <string name="empty_forecast_list_no_network">No weather information available. The network is not available to fetch weather data.</string>
+
 
 </resources>

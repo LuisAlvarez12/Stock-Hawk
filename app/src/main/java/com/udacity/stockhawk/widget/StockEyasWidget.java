@@ -28,10 +28,15 @@ public class StockEyasWidget extends AppWidgetProvider {
 
         CharSequence widgetText = context.getString(R.string.appwidget_text);
         // Construct the RemoteViews object
+
+
+
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget_4x1);
         views.setOnClickPendingIntent(R.id.widget_condition_holder, centerClickPendingIntent(context));
         views.setOnClickPendingIntent(R.id.widget_holder_right,rightClickPendingIntent(context) );
         views.setOnClickPendingIntent(R.id.widget_holder_left, leftClickPendingIntent(context));
+
+
 
         String[] selectedStocks = PrefUtils.getStocksForWidget(context);
         initWidgetViews(context, views, selectedStocks);
@@ -39,27 +44,21 @@ public class StockEyasWidget extends AppWidgetProvider {
         // Instruct the widget manager to update the widget
         appWidgetManager.updateAppWidget(appWidgetId, views);
     }
+    private static PendingIntent centerClickPendingIntent( Context cntx){
+        Intent intentCenter = new Intent(cntx,WidgetStockSelection.class);
+        PendingIntent configPendingIntent = PendingIntent.getActivity(cntx, 0, intentCenter, 0);
+        return configPendingIntent;
+    }
 
     private static PendingIntent leftClickPendingIntent(Context cntx){
-        Log.d("position","0 pendingintent");
-        Intent intentLeft = new Intent(cntx,WidgetStockSelection.class);
-        intentLeft.putExtra("position",0);
-        PendingIntent configPendingIntent = PendingIntent.getActivity(cntx, 0, intentLeft, PendingIntent.FLAG_UPDATE_CURRENT);
+        Intent intentLeft = new Intent(cntx,WidgetLeftStock.class);
+        PendingIntent configPendingIntent = PendingIntent.getActivity(cntx, 0, intentLeft, 0);
         return configPendingIntent;
     }
 
     private static PendingIntent rightClickPendingIntent( Context cntx){
-        Log.d("position","2 pendingintent");
-        Intent intentRight = new Intent(cntx,WidgetStockSelection.class);
-        intentRight.putExtra("position",2);
-        PendingIntent configPendingIntent = PendingIntent.getActivity(cntx, 0, intentRight, PendingIntent.FLAG_UPDATE_CURRENT);
-        return configPendingIntent;
-    }
-    private static PendingIntent centerClickPendingIntent( Context cntx){
-        Log.d("position","1 pendingintent");
-        Intent intentCenter = new Intent(cntx,WidgetStockSelection.class);
-        intentCenter.putExtra("position",1);
-        PendingIntent configPendingIntent = PendingIntent.getActivity(cntx, 0, intentCenter, PendingIntent.FLAG_UPDATE_CURRENT);
+        Intent intentRight = new Intent(cntx,WidgetRightStock.class);
+        PendingIntent configPendingIntent = PendingIntent.getActivity(cntx, 0, intentRight,0);
         return configPendingIntent;
     }
 

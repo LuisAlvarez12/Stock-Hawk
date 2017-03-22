@@ -25,6 +25,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import timber.log.Timber;
 
+import static android.R.attr.label;
 import static com.udacity.stockhawk.R.drawable.percent_change_rect_red;
 
 class StockAdapter extends RecyclerView.Adapter<StockAdapter.StockViewHolder> {
@@ -90,7 +91,8 @@ class StockAdapter extends RecyclerView.Adapter<StockAdapter.StockViewHolder> {
         //get both percentages and absolute changes to be switched on the fly
         float rawAbsoluteChange = cursor.getFloat(Contract.Quote.POSITION_ABSOLUTE_CHANGE);
         float percentageChange = cursor.getFloat(Contract.Quote.POSITION_PERCENTAGE_CHANGE);
-
+        holder.condition.setContentDescription("Access stock details for "+cursor.getString(Contract.Quote.POSITION_SYMBOL));
+        holder.condition.setFocusable(true);
         String change = dollarFormatWithPlus.format(rawAbsoluteChange);
         String percentage = percentageFormat.format(percentageChange / 100);
         //change color of background based on negative and positive

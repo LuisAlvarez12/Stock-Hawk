@@ -69,7 +69,7 @@ public final class QuoteSyncJob {
                 switch (i) {
                     case 0:
                         from = Calendar.getInstance();
-                        from.add(Calendar.WEEK_OF_YEAR, -2);
+                        from.add(Calendar.WEEK_OF_YEAR, -4);
                         history = stock.getHistory(from, to, Interval.DAILY);
                          historyFetcher = new HistoryFetcher(history).invoke();
                         closeMax = historyFetcher.getCloseMax();
@@ -130,7 +130,7 @@ public final class QuoteSyncJob {
         //
         Calendar from = Calendar.getInstance();
         Calendar to = Calendar.getInstance();
-        from.add(Calendar.YEAR, -10);
+        from.add(Calendar.MONTH, -6);
 
         try {
 

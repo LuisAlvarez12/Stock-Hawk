@@ -5,22 +5,25 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.app.Fragment;
+import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
-import android.util.Log;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import com.daimajia.androidanimations.library.Techniques;
-import com.daimajia.androidanimations.library.YoYo;
 import com.robinhood.spark.SparkView;
 import com.udacity.stockhawk.R;
 import com.udacity.stockhawk.SparkLineAdapter.SparkLineAdapter;
 import com.udacity.stockhawk.data.Contract;
+import com.udacity.stockhawk.data.PrefUtils;
 import com.udacity.stockhawk.sync.QuoteSyncJob;
 
 import java.util.Arrays;
@@ -29,11 +32,13 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static java.lang.Float.parseFloat;
+
 /**
  * Created by luisalvarez on 3/18/17.
  */
 
-public class DetailFragment extends Fragment {
+public class DetailFragment extends android.support.v4.app.Fragment {
 
     private Cursor symbolObject;
     private float[] retArray;
@@ -48,6 +53,8 @@ public class DetailFragment extends Fragment {
     private String lastScrubbedValue = "";
 
 
+    @BindView(R.id.coordinator_detail)
+    CoordinatorLayout coordinator_detail;
 
     @BindView(R.id.tab_layout1)
     TabLayout tabLayout;
@@ -70,29 +77,71 @@ public class DetailFragment extends Fragment {
     @BindView(R.id.icon_article)
     ImageView icon_Newspaper;
 
+    @BindView(R.id.tv_detail)
+    TextView tv_highLowThirty;
+
+    @BindView(R.id.news_cnn)
+    TextView news_cnn;
+
+    @BindView(R.id.news_google)
+    TextView news_google;
+
+    @BindView(R.id.news_nasdaq)
+    TextView news_nasdaq;
+
+    @BindView(R.id.collapsing_toolbar)
+    CollapsingToolbarLayout collapsingtoolbar;
+
+    @BindView(R.id.app_bar_layout)
+    AppBarLayout appBarLayout;
+
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
 
 
+    private String getHighLowThirtyDays(){
+        String[] listOfDailyCloses= symbolObject.getString(Contract.Quote.POSITION_HISTORY_DAILY_CLOSE).split(",");
+        String[] listOfDailyDates = symbolObject.getString(Contract.Quote.POSITION_HISTORY_DAILY_DATES).split(",");
+        float highest = 0;
+        int index=0;
+        for(int i =0;i<listOfDailyCloses.length;i++){
+            if(parseFloat(listOfDailyCloses[i])>highest){
+                highest = parseFloat(listOfDailyCloses[i]);
+                index=i;
+            }else if(highest==0){
+               highest = Float.parseFloat(listOfDailyCloses[i]);
+                index=i;
+            }
+        }
+        return "$"+highest + "\n"+ QuoteSyncJob.getDate(
+                Long.parseLong(listOfDailyDates[index]), "MM/dd/yyyy");
+    }
 
     @Override
-    public View onCreateView(LayoutInflater inflater,  ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 //        return super.onCreateView(inflater, container, savedInstanceState);
         View rootView = inflater.inflate(R.layout.fragment_detail, container, false);
-        ButterKnife.bind(this,rootView);
-
+        ButterKnife.bind(this, rootView);
 //        YoYo.with(Techniques.RollIn)
 //                .duration(2000)
 //                .repeat(1)
 //                .playOn(rootView.findViewById(R.id.tittles));
-        tabLayout.setSelectedTabIndicatorColor((getResources().getColor(getActivity().getIntent().getIntExtra("color",R.color.material_green_700))));
+        collapsingtoolbar.setContentScrimColor(getResources().getColor(getActivity().getIntent().getIntExtra("color",R.color.material_green_700)));
+        toolbar.setBackgroundColor(getResources().getColor(getActivity().getIntent().getIntExtra("color",R.color.material_green_700)));
+        appBarLayout.setBackgroundColor(getResources().getColor(getActivity().getIntent().getIntExtra("color",R.color.material_green_700)));
 
-        CreateInitCursor();
-        lineGraph.setLineColor(getResources().getColor(getActivity().getIntent().getIntExtra("color",R.color.material_green_700)));
+
+            CreateInitCursor();
+
+        lineGraph.setLineColor(getResources().getColor(getActivity().getIntent().getIntExtra("color", R.color.material_green_700)));
 
         //init tabs
-        tabLayout.addTab(tabLayout.newTab().setText("D"));tabLayout.addTab(tabLayout.newTab().setText("W"));
-        tabLayout.addTab(tabLayout.newTab().setText("M"));tabLayout.addTab(tabLayout.newTab().setText("3 Y"));
-        tabLayout.addTab(tabLayout.newTab().setText("Max"));tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
-
+        tabLayout.addTab(tabLayout.newTab().setText("D"));
+        tabLayout.addTab(tabLayout.newTab().setText("W"));
+        tabLayout.addTab(tabLayout.newTab().setText("M"));
+        tabLayout.addTab(tabLayout.newTab().setText("3 Y"));
+        tabLayout.addTab(tabLayout.newTab().setText("Max"));
+        tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
         return rootView;
     }
 
@@ -101,28 +150,13 @@ public class DetailFragment extends Fragment {
         retArray = new float[historyClosings.length];
         int j = 0;
         for (int i = retArray.length - 1; i >= 0; i--) {
-            retArray[j] = Float.parseFloat(historyClosings[i]);
+            retArray[j] = parseFloat(historyClosings[i]);
             j++;
         }
         datesArray = dates.split(",");
         return retArray;
     }
 
-    private void PrintAllValues2(){
-        int j=0;
-        Log.d("printall2",j++ +" : symbol: "+symbolObject.getString(Contract.Quote.POSITION_SYMBOL));
-        Log.d("printall2",j++ +" : price "+symbolObject.getString(Contract.Quote.POSITION_PRICE));
-        Log.d("printall2",j++ +" : monthly close -"+symbolObject.getString(Contract.Quote.POSITION_HISTORY_MONTHLY_CLOSE));
-        Log.d("printall2",j++ +" : monthly dates -"+symbolObject.getString(Contract.Quote.POSITION_HISTORY_MONTHLY_DATES));
-        Log.d("printall2",j++ +" : 3year close -"+symbolObject.getString(Contract.Quote.POSITION_HISTORY_3YEAR_CLOSE));
-        Log.d("printall2",j++ +" : 3year dates -"+symbolObject.getString(Contract.Quote.POSITION_HISTORY_3YEAR_DATES));
-        Log.d("printall2",j++ +" : daily dates -"+symbolObject.getString(Contract.Quote.POSITION_HISTORY_DAILY_DATES));
-        Log.d("printall2",j++ +" : daily close -"+symbolObject.getString(Contract.Quote.POSITION_HISTORY_DAILY_CLOSE));
-        Log.d("printall2",j++ +" : max close -"+symbolObject.getString(Contract.Quote.POSITION_HISTORY_MAX_CLOSE));
-        Log.d("printall2",j++ +" : max dates -"+symbolObject.getString(Contract.Quote.POSITION_HISTORY_MAX_DATES));
-        Log.d("printall2",j++ +" : weekly dates -"+symbolObject.getString(Contract.Quote.POSITION_HISTORY_DATE));
-        Log.d("printall2",j++ +" : weekly close -"+symbolObject.getString(Contract.Quote.POSITION_HISTORY_CLOSE));
-    }
 
     private void CreateInitCursor() {
         args[0] = getActivity().getIntent().getStringExtra("symbol");
@@ -132,21 +166,38 @@ public class DetailFragment extends Fragment {
                 Contract.Quote.URI,
                 Contract.Quote.QUOTE_COLUMNS.toArray(new String[]{}),
                 "symbol=?", args, Contract.Quote.COLUMN_SYMBOL);
+
         if (symbolObject != null) {
             symbolObject.moveToFirst();
         }
-        tvPercentageIndicator.setText(symbolObject.getString(Contract.Quote.POSITION_PERCENTAGE_CHANGE)+"%");
-        tvActualIndicator.setText("$"+symbolObject.getString(Contract.Quote.POSITION_ABSOLUTE_CHANGE));
+        collapsingtoolbar.setTitle(symbolObject.getString(Contract.Quote.POSITION_SYMBOL)+"      $"+symbolObject.getString(Contract.Quote.POSITION_PRICE));
+
+        tvPercentageIndicator.setText(symbolObject.getString(Contract.Quote.POSITION_PERCENTAGE_CHANGE) + "%");
+        tvPercentageIndicator.setContentDescription(symbolObject.getString(Contract.Quote.POSITION_PERCENTAGE_CHANGE) + " percentage");
+        if(symbolObject.getString(Contract.Quote.POSITION_ABSOLUTE_CHANGE).charAt(0)=='-'){
+            char[] replaceChar =  symbolObject.getString(Contract.Quote.POSITION_ABSOLUTE_CHANGE).toCharArray();
+            tvActualIndicator.setText("-" + symbolObject.getString(Contract.Quote.POSITION_ABSOLUTE_CHANGE).replace('-','$'));
+        }else {
+            tvActualIndicator.setText("$" + symbolObject.getString(Contract.Quote.POSITION_ABSOLUTE_CHANGE));
+
+        }
+        tvActualIndicator.setContentDescription("$" + symbolObject.getString(Contract.Quote.POSITION_ABSOLUTE_CHANGE));
 //        tv_price.setText("$"+symbolObject.getString(Contract.Quote.POSITION_PRICE));
-        Syncer fetchHistoricalData = new Syncer();
-        fetchHistoricalData.execute();
+        if(PrefUtils.isNetworkAvailable(getActivity())) {
+            Syncer fetchHistoricalData = new Syncer();
+            fetchHistoricalData.execute();
+        }else{
+            Snackbar snackbar = Snackbar
+                    .make(coordinator_detail, getActivity().getString(R.string.error_no_network), Snackbar.LENGTH_LONG);
+            snackbar.show();
+        }
     }
 
     public class Syncer extends AsyncTask<Void, Void, Void> {
         @Override
         protected Void doInBackground(Void... params) {
-            if(symbolObject.getString(Contract.Quote.POSITION_HISTORY_MONTHLY_CLOSE)!=null){
-            }else {
+            if (symbolObject.getString(Contract.Quote.POSITION_HISTORY_MONTHLY_CLOSE) != null) {
+            } else {
                 QuoteSyncJob.initFullGraphValues(
                         getActivity(),
                         symbolObject.getString(Contract.Quote.POSITION_SYMBOL),
@@ -159,12 +210,18 @@ public class DetailFragment extends Fragment {
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
             refreshCursor();
+            lineGraph.setAdapter(sparkLineAdapter);
+            datesArray = symbolObject.getString(Contract.Quote.POSITION_HISTORY_DATE).split(",");
+            InitListeners(graphLabel);
             sparkLineAdapter = new SparkLineAdapter(cursorToAdapterSelection(
                     symbolObject.getString(Contract.Quote.POSITION_HISTORY_DAILY_DATES),
                     symbolObject.getString(Contract.Quote.POSITION_HISTORY_DAILY_CLOSE)));
             lineGraph.setAdapter(sparkLineAdapter);
-            datesArray = symbolObject.getString(Contract.Quote.POSITION_HISTORY_DATE).split(",");
-            InitListeners(graphLabel);
+            TabLayout.Tab tab = tabLayout.getTabAt(0);
+            tab.select();
+
+            tv_highLowThirty.setText(getHighLowThirtyDays());
+
         }
 
         private void refreshCursor() {
@@ -179,22 +236,14 @@ public class DetailFragment extends Fragment {
 
     private void InitListeners(final TextView graphLabel) {
 
-        icon_Newspaper.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String url = "https://www.google.com/search?q="+symbolObject.getString(Contract.Quote.POSITION_SYMBOL)+"&tbm=nws";
-                Intent i = new Intent(Intent.ACTION_VIEW);
-                i.setData(Uri.parse(url));
-                startActivity(i);
-            }
-        });
+
         lineGraph.setScrubListener(new SparkView.OnScrubListener() {
             @Override
             public void onScrubbed(Object value) {
                 if (value == null && beenScrubbed) {
                     graphLabel.setText(lastScrubbedValue);
                 } else if (value == null) {
-                    graphLabel.setText("1 Year \n");
+                    graphLabel.setText("\n");
                 } else {
                     String val =
                             QuoteSyncJob.getDate(
@@ -203,10 +252,42 @@ public class DetailFragment extends Fragment {
                                     "MM/dd/yyyy")
                                     + "\n" + value;
                     graphLabel.setText(val);
+                    graphLabel.setContentDescription(val);
                     lastScrubbedValue = val;
                     beenScrubbed = true;
 
                 }
+            }
+        });
+
+
+        news_google.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String url = "https://www.google.com/search?q=" + symbolObject.getString(Contract.Quote.POSITION_SYMBOL) + "&tbm=nws";
+                Intent i = new Intent(Intent.ACTION_VIEW);
+                i.setData(Uri.parse(url));
+                startActivity(i);
+            }
+        });
+
+        news_nasdaq.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String url = "http://www.nasdaq.com/symbol/" + symbolObject.getString(Contract.Quote.POSITION_SYMBOL) + "/news-headlines";
+                Intent i = new Intent(Intent.ACTION_VIEW);
+                i.setData(Uri.parse(url));
+                startActivity(i);
+            }
+        });
+
+        news_cnn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String url = "http://money.cnn.com/quote/news/news.html?symb=" + symbolObject.getString(Contract.Quote.POSITION_SYMBOL);
+                Intent i = new Intent(Intent.ACTION_VIEW);
+                i.setData(Uri.parse(url));
+                startActivity(i);
             }
         });
 
@@ -247,11 +328,15 @@ public class DetailFragment extends Fragment {
                         break;
                 }
             }
+
             @Override
-            public void onTabUnselected(TabLayout.Tab tab) {}
+            public void onTabUnselected(TabLayout.Tab tab) {
+            }
+
             @Override
-            public void onTabReselected(TabLayout.Tab tab) {}
+            public void onTabReselected(TabLayout.Tab tab) {
+            }
         });
     }
-    }
+}
 

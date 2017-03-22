@@ -6,8 +6,8 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,15 +31,13 @@ public class AddStockDialog extends DialogFragment {
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-
+        super.onCreate(savedInstanceState);
         //create the builder
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(),R.style.AlertDialogCustom);
         LayoutInflater inflater = LayoutInflater.from(getActivity());
         @SuppressLint("InflateParams") View custom = inflater.inflate(R.layout.add_stock_dialog, null);
 
         ButterKnife.bind(this, custom);
-
         stock.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
@@ -61,6 +59,7 @@ public class AddStockDialog extends DialogFragment {
                 });
         //cancel tag
         builder.setNegativeButton(getString(R.string.dialog_cancel), null);
+
         //dialog creation
         Dialog dialog = builder.create();
 
@@ -69,19 +68,24 @@ public class AddStockDialog extends DialogFragment {
             //check the layout of the dialog
             window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
         }
-
         return dialog;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
     }
 
 
 //add stock callback to mainactivities addstock method
     private void addStock() {
         //get instance of mainactivity
-        android.app.Fragment parent = getParentFragment();
+        Activity parent = getActivity();
         //check if mainactivity is parent
-        if (parent instanceof MainFragment) {
+        if (parent instanceof MainActivity) {
             //callback to add stock from contents of the input.
-            ((MainFragment) parent).addStock(stock.getText().toString());
+            ((MainActivity) parent).addStock(stock.getText().toString());
         }
         //dismiss the fragment dialog
         dismissAllowingStateLoss();
