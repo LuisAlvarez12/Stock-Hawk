@@ -115,8 +115,8 @@ public class DetailFragment extends android.support.v4.app.Fragment {
                 index=i;
             }
         }
-        return "$"+highest + "\n"+ QuoteSyncJob.getDate(
-                Long.parseLong(listOfDailyDates[index]), "MM/dd/yyyy");
+        return getActivity().getResources().getString(R.string.dolla_sign)+highest + "\n"+ QuoteSyncJob.getDate(
+                Long.parseLong(listOfDailyDates[index]), getActivity().getResources().getString(R.string.month_day_year));
     }
 
     @Override
@@ -156,7 +156,7 @@ public class DetailFragment extends android.support.v4.app.Fragment {
 
     //cursor data setting
     private void CreateInitCursor() {
-        args[0] = getActivity().getIntent().getStringExtra("symbol");
+        args[0] = getActivity().getIntent().getStringExtra(getActivity().getResources().getString(R.string.symbol));
         List contractlist = Contract.Quote.QUOTE_COLUMNS;
         String[] stringArray = Arrays.copyOf(contractlist.toArray(), contractlist.toArray().length, String[].class);
         symbolObject = getActivity().getContentResolver().query(
@@ -167,7 +167,8 @@ public class DetailFragment extends android.support.v4.app.Fragment {
         if (symbolObject != null) {
             symbolObject.moveToFirst();
         }
-        collapsingtoolbar.setTitle(symbolObject.getString(Contract.Quote.POSITION_SYMBOL)+"      $"+symbolObject.getString(Contract.Quote.POSITION_PRICE));
+        collapsingtoolbar.setTitle(symbolObject.getString(Contract.Quote.POSITION_SYMBOL)+getActivity().getResources().getString(R.string.action_bar_spacing)
+                +symbolObject.getString(Contract.Quote.POSITION_PRICE));
 
         tvPercentageIndicator.setText(symbolObject.getString(Contract.Quote.POSITION_PERCENTAGE_CHANGE) + "%");
         tvPercentageIndicator.setContentDescription(symbolObject.getString(Contract.Quote.POSITION_PERCENTAGE_CHANGE) + " percentage");
@@ -175,9 +176,9 @@ public class DetailFragment extends android.support.v4.app.Fragment {
             char[] replaceChar =  symbolObject.getString(Contract.Quote.POSITION_ABSOLUTE_CHANGE).toCharArray();
             tvActualIndicator.setText("-" + symbolObject.getString(Contract.Quote.POSITION_ABSOLUTE_CHANGE).replace('-','$'));
         }else {
-            tvActualIndicator.setText("$" + symbolObject.getString(Contract.Quote.POSITION_ABSOLUTE_CHANGE));
+            tvActualIndicator.setText(getActivity().getResources().getString(R.string.dolla_sign) + symbolObject.getString(Contract.Quote.POSITION_ABSOLUTE_CHANGE));
         }
-        tvActualIndicator.setContentDescription("$" + symbolObject.getString(Contract.Quote.POSITION_ABSOLUTE_CHANGE));
+        tvActualIndicator.setContentDescription(getActivity().getResources().getString(R.string.dolla_sign) + symbolObject.getString(Contract.Quote.POSITION_ABSOLUTE_CHANGE));
         if(PrefUtils.isNetworkAvailable(getActivity())) {
             Syncer fetchHistoricalData = new Syncer();
             fetchHistoricalData.execute();
@@ -247,8 +248,8 @@ public class DetailFragment extends android.support.v4.app.Fragment {
                             QuoteSyncJob.getDate(
                                     Long.parseLong(
                                             datesArray[(datesArray.length - 1) - sparkLineAdapter.getPosition()]),
-                                    "MM/dd/yyyy")
-                                    + "\n" + "$"+value;
+                                    getActivity().getResources().getString(R.string.month_day_year))
+                                    + "\n" + getActivity().getResources().getString(R.string.dolla_sign)+value;
                     graphLabel.setText(val);
                     graphLabel.setContentDescription(val);
                     lastScrubbedValue = val;
@@ -258,35 +259,6 @@ public class DetailFragment extends android.support.v4.app.Fragment {
             }
         });
 
-        news_google.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String url = "https://www.google.com/search?q=" + symbolObject.getString(Contract.Quote.POSITION_SYMBOL) + "&tbm=nws";
-                Intent i = new Intent(Intent.ACTION_VIEW);
-                i.setData(Uri.parse(url));
-                startActivity(i);
-            }
-        });
-
-        news_nasdaq.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String url = "http://www.nasdaq.com/symbol/" + symbolObject.getString(Contract.Quote.POSITION_SYMBOL) + "/news-headlines";
-                Intent i = new Intent(Intent.ACTION_VIEW);
-                i.setData(Uri.parse(url));
-                startActivity(i);
-            }
-        });
-
-        news_cnn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String url = "http://money.cnn.com/quote/news/news.html?symb=" + symbolObject.getString(Contract.Quote.POSITION_SYMBOL);
-                Intent i = new Intent(Intent.ACTION_VIEW);
-                i.setData(Uri.parse(url));
-                startActivity(i);
-            }
-        });
 
         tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
@@ -334,7 +306,38 @@ public class DetailFragment extends android.support.v4.app.Fragment {
             public void onTabReselected(TabLayout.Tab tab) {
             }
         });
+        news_google.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String url = "https://www.google.com/search?q=" + symbolObject.getString(Contract.Quote.POSITION_SYMBOL) + "&tbm=nws";
+                Intent i = new Intent(Intent.ACTION_VIEW);
+                i.setData(Uri.parse(url));
+                startActivity(i);
+            }
+        });
+
+        news_nasdaq.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String url = "http://www.nasdaq.com/symbol/" + symbolObject.getString(Contract.Quote.POSITION_SYMBOL) + "/news-headlines";
+                Intent i = new Intent(Intent.ACTION_VIEW);
+                i.setData(Uri.parse(url));
+                startActivity(i);
+            }
+        });
+
+        news_cnn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String url = "http://money.cnn.com/quote/news/news.html?symb=" + symbolObject.getString(Contract.Quote.POSITION_SYMBOL);
+                Intent i = new Intent(Intent.ACTION_VIEW);
+                i.setData(Uri.parse(url));
+                startActivity(i);
+            }
+        });
+
     }
+
 
 
 }
