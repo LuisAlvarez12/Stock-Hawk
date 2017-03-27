@@ -2,6 +2,7 @@ package com.udacity.stockhawk.ui;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.ConnectivityManager;
@@ -38,6 +39,8 @@ import com.udacity.stockhawk.R;
 import com.udacity.stockhawk.data.Contract;
 import com.udacity.stockhawk.data.PrefUtils;
 import com.udacity.stockhawk.sync.QuoteSyncJob;
+import com.udacity.stockhawk.widget.StockEyasWidget;
+import com.udacity.stockhawk.widget.WidgetDataProvider;
 
 import java.io.IOException;
 import java.util.Map;
@@ -86,9 +89,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     public void onClick(String symbol) {
 
     }
-
-    private float dX, dY;
-    private boolean ticker = false;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {

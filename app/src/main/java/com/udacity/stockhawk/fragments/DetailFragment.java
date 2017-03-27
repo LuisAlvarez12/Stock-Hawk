@@ -10,16 +10,13 @@ import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.Loader;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.robinhood.spark.SparkView;
 import com.udacity.stockhawk.R;
@@ -49,8 +46,6 @@ public class DetailFragment extends android.support.v4.app.Fragment {
 
     private SparkLineAdapter sparkLineAdapter;
 
-    private String[] datesTemp;
-    private float[] closeTemp;
     private boolean beenScrubbed = false;
     private String lastScrubbedValue = "";
 
@@ -72,9 +67,6 @@ public class DetailFragment extends android.support.v4.app.Fragment {
 
     @BindView(R.id.tv_detail_actual)
     TextView tvActualIndicator;
-
-//    @BindView(R.id.tv_price)
-//    TextView tv_price;
 
     @BindView(R.id.icon_article)
     ImageView icon_Newspaper;
@@ -100,6 +92,10 @@ public class DetailFragment extends android.support.v4.app.Fragment {
     @BindView(R.id.toolbar)
     Toolbar toolbar;
 
+    private String STOCK_INTENT_KEY ="";
+    private String STOCK_SYMBOL_ARG_KEY ="symbol=?";
+
+
 //High and low textview setup
     private String getHighLowThirtyDays(){
         String[] listOfDailyCloses= symbolObject.getString(Contract.Quote.POSITION_HISTORY_DAILY_CLOSE).split(",");
@@ -123,12 +119,13 @@ public class DetailFragment extends android.support.v4.app.Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_detail, container, false);
         ButterKnife.bind(this, rootView);
-        collapsingtoolbar.setContentScrimColor(getResources().getColor(getActivity().getIntent().getIntExtra("color",R.color.material_green_700)));
-        toolbar.setBackgroundColor(getResources().getColor(getActivity().getIntent().getIntExtra("color",R.color.material_green_700)));
-        appBarLayout.setBackgroundColor(getResources().getColor(getActivity().getIntent().getIntExtra("color",R.color.material_green_700)));
+        STOCK_INTENT_KEY=getActivity().getResources().getString(R.string.color);
+        collapsingtoolbar.setContentScrimColor(getResources().getColor(getActivity().getIntent().getIntExtra(STOCK_INTENT_KEY,R.color.material_green_700)));
+        toolbar.setBackgroundColor(getResources().getColor(getActivity().getIntent().getIntExtra(STOCK_INTENT_KEY,R.color.material_green_700)));
+        appBarLayout.setBackgroundColor(getResources().getColor(getActivity().getIntent().getIntExtra(STOCK_INTENT_KEY,R.color.material_green_700)));
 
-        CreateInitCursor();
-        lineGraph.setLineColor(getResources().getColor(getActivity().getIntent().getIntExtra("color", R.color.material_green_700)));
+        createInitCursor();
+        lineGraph.setLineColor(getResources().getColor(getActivity().getIntent().getIntExtra(STOCK_INTENT_KEY, R.color.material_green_700)));
 
         //init tabs
         tabLayout.addTab(tabLayout.newTab().setText(getActivity().getString(R.string.tab_d)));
@@ -142,27 +139,27 @@ public class DetailFragment extends android.support.v4.app.Fragment {
 
 
     private float[] cursorToAdapterSelection(String dates, String closings) {
-        String[] historyClosings = closings.split(",");
+        String[] historyClosings = closings.split(getActivity().getString(R.string.comma));
         retArray = new float[historyClosings.length];
         int j = 0;
         for (int i = retArray.length - 1; i >= 0; i--) {
             retArray[j] = parseFloat(historyClosings[i]);
             j++;
         }
-        datesArray = dates.split(",");
+        datesArray = dates.split(getActivity().getString(R.string.comma));
         return retArray;
     }
 
 
     //cursor data setting
-    private void CreateInitCursor() {
+    private void createInitCursor() {
         args[0] = getActivity().getIntent().getStringExtra(getActivity().getResources().getString(R.string.symbol));
         List contractlist = Contract.Quote.QUOTE_COLUMNS;
         String[] stringArray = Arrays.copyOf(contractlist.toArray(), contractlist.toArray().length, String[].class);
         symbolObject = getActivity().getContentResolver().query(
                 Contract.Quote.URI,
                 Contract.Quote.QUOTE_COLUMNS.toArray(new String[]{}),
-                "symbol=?", args, Contract.Quote.COLUMN_SYMBOL);
+                STOCK_SYMBOL_ARG_KEY, args, Contract.Quote.COLUMN_SYMBOL);
 
         if (symbolObject != null) {
             symbolObject.moveToFirst();
@@ -171,10 +168,10 @@ public class DetailFragment extends android.support.v4.app.Fragment {
                 +symbolObject.getString(Contract.Quote.POSITION_PRICE));
 
         tvPercentageIndicator.setText(symbolObject.getString(Contract.Quote.POSITION_PERCENTAGE_CHANGE) + "%");
-        tvPercentageIndicator.setContentDescription(symbolObject.getString(Contract.Quote.POSITION_PERCENTAGE_CHANGE) + " percentage");
+        tvPercentageIndicator.setContentDescription(symbolObject.getString(Contract.Quote.POSITION_PERCENTAGE_CHANGE) + getActivity().getString(R.string.percentage));
         if(symbolObject.getString(Contract.Quote.POSITION_ABSOLUTE_CHANGE).charAt(0)=='-'){
             char[] replaceChar =  symbolObject.getString(Contract.Quote.POSITION_ABSOLUTE_CHANGE).toCharArray();
-            tvActualIndicator.setText("-" + symbolObject.getString(Contract.Quote.POSITION_ABSOLUTE_CHANGE).replace('-','$'));
+            tvActualIndicator.setText(getActivity().getString(R.string.minus_sign) + symbolObject.getString(Contract.Quote.POSITION_ABSOLUTE_CHANGE).replace('-','$'));
         }else {
             tvActualIndicator.setText(getActivity().getResources().getString(R.string.dolla_sign) + symbolObject.getString(Contract.Quote.POSITION_ABSOLUTE_CHANGE));
         }
@@ -226,7 +223,7 @@ public class DetailFragment extends android.support.v4.app.Fragment {
             symbolObject = getActivity().getContentResolver().query(
                     Contract.Quote.URI,
                     Contract.Quote.QUOTE_COLUMNS.toArray(new String[]{}),
-                    "symbol=?", args
+                    STOCK_SYMBOL_ARG_KEY, args
                     , Contract.Quote.COLUMN_SYMBOL);
             symbolObject.moveToFirst();
         }
