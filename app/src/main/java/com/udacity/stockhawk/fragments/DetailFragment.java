@@ -198,6 +198,7 @@ public class DetailFragment extends android.support.v4.app.Fragment {
                         getActivity(),
                         symbolObject.getString(Contract.Quote.POSITION_SYMBOL),
                         symbolObject);
+                refreshCursor();
             }
             return null;
         }
@@ -205,7 +206,6 @@ public class DetailFragment extends android.support.v4.app.Fragment {
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
-            refreshCursor();
             lineGraph.setAdapter(sparkLineAdapter);
             datesArray = symbolObject.getString(Contract.Quote.POSITION_HISTORY_DATE).split(",");
             InitListeners(graphLabel);

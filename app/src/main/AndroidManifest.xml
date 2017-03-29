@@ -15,7 +15,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".ui.MainActivity">
+        <activity android:name=".ui.MainActivity"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -53,6 +54,7 @@
                 android:resource="@xml/stock_eyas_widget_info" />
         </receiver>
         <service android:name=".widget.WidgetService"
+            android:exported="true"
             android:permission="android.permission.BIND_REMOTEVIEWS" />
 
     </application>

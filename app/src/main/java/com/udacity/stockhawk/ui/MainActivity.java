@@ -3,7 +3,10 @@ package com.udacity.stockhawk.ui;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.appwidget.AppWidgetManager;
+import android.appwidget.AppWidgetProvider;
+import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -32,6 +35,7 @@ import android.view.animation.TranslateAnimation;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RemoteViews;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -41,6 +45,7 @@ import com.udacity.stockhawk.data.PrefUtils;
 import com.udacity.stockhawk.sync.QuoteSyncJob;
 import com.udacity.stockhawk.widget.StockEyasWidget;
 import com.udacity.stockhawk.widget.WidgetDataProvider;
+import com.udacity.stockhawk.widget.WidgetService;
 
 import java.io.IOException;
 import java.util.Map;
@@ -138,10 +143,25 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                     String symbol = adapter.getSymbolAtPosition(viewHolder.getAdapterPosition());
                     PrefUtils.removeStock(MainActivity.this, symbol);
                     getContentResolver().delete(Contract.Quote.makeUriForStock(symbol), null, null);
+
                 }
             }).attachToRecyclerView(stockRecyclerView);
 
 
+    }
+    public static void updateAllWidgets(final Context context,
+                                        final int layoutResourceId,
+                                        final Class< ? extends AppWidgetProvider> appWidgetClass)
+    {
+        RemoteViews remoteViews = new RemoteViews(context.getPackageName(), layoutResourceId);
+
+        AppWidgetManager manager = AppWidgetManager.getInstance(context);
+        final int[] appWidgetIds = manager.getAppWidgetIds(new ComponentName(context, appWidgetClass));
+
+        for (int i = 0; i < appWidgetIds.length; ++i)
+        {
+            manager.updateAppWidget(appWidgetIds[i], remoteViews);
+        }
     }
 
     //check if network is currently active, returns bool for addstock
@@ -222,8 +242,13 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         protected Void doInBackground(String... params) {
             try {
                 Map<String, Stock> quotes = null;
-                quotes = YahooFinance.get(params);
-                Stock stock = quotes.get(params[0]);
+                Stock stock = null;
+                try {
+                    quotes = YahooFinance.get(params);
+                     stock = quotes.get(params[0]);
+                }catch (StringIndexOutOfBoundsException e){
+                    return null;
+                }
                 StockQuote quote = stock.getQuote();
                 if (quote.getPrice() != null) {
                     PrefUtils.addStock(getApplicationContext(), params[0]);
@@ -243,6 +268,13 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             if (validStock){
                 QuoteSyncJob.syncImmediately(getApplicationContext());
             swipeRefreshLayout.setRefreshing(false);
+                int[] ids = AppWidgetManager.getInstance(getApplication()).getAppWidgetIds(new ComponentName(getApplication(), StockEyasWidget.class));
+                StockEyasWidget myWidget = new StockEyasWidget();
+                myWidget.onUpdate(getApplicationContext(), AppWidgetManager.getInstance(getApplicationContext()),ids);
+                RemoteViews widget = new RemoteViews(getApplicationContext().getPackageName(), R.layout.widget3x3);
+
+                widget.setRemoteAdapter(R.id.widget_list,
+                        new Intent(getApplicationContext(), WidgetService.class));
 
             }else{
                 swipeRefreshLayout.setRefreshing(false);
