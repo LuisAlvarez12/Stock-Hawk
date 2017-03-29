@@ -268,13 +268,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             if (validStock){
                 QuoteSyncJob.syncImmediately(getApplicationContext());
             swipeRefreshLayout.setRefreshing(false);
-                int[] ids = AppWidgetManager.getInstance(getApplication()).getAppWidgetIds(new ComponentName(getApplication(), StockEyasWidget.class));
-                StockEyasWidget myWidget = new StockEyasWidget();
-                myWidget.onUpdate(getApplicationContext(), AppWidgetManager.getInstance(getApplicationContext()),ids);
-                RemoteViews widget = new RemoteViews(getApplicationContext().getPackageName(), R.layout.widget3x3);
-
-                widget.setRemoteAdapter(R.id.widget_list,
-                        new Intent(getApplicationContext(), WidgetService.class));
+            
 
             }else{
                 swipeRefreshLayout.setRefreshing(false);
