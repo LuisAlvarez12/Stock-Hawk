@@ -26,10 +26,7 @@ public class WidgetDataProvider implements RemoteViewsService.RemoteViewsFactory
 
     public WidgetDataProvider(Context context, Intent intent) {
         mContext = context;
-        cursor = mContext.getContentResolver().query(
-                Contract.Quote.URI,
-                Contract.Quote.QUOTE_COLUMNS.toArray(new String[]{}),
-                null, null, Contract.Quote.COLUMN_SYMBOL);
+        initData();
         KEY_COLOR = mContext.getResources().getString(R.string.color);
         KEY_SYMBOL = mContext.getResources().getString(R.string.symbol);
     }
@@ -41,6 +38,7 @@ public class WidgetDataProvider implements RemoteViewsService.RemoteViewsFactory
 
     @Override
     public void onDataSetChanged() {
+      initData();
     }
 
     @Override
@@ -116,6 +114,10 @@ public class WidgetDataProvider implements RemoteViewsService.RemoteViewsFactory
     }
 
     private void initData() {
+        cursor = mContext.getContentResolver().query(
+                Contract.Quote.URI,
+                Contract.Quote.QUOTE_COLUMNS.toArray(new String[]{}),
+                null, null, Contract.Quote.COLUMN_SYMBOL);
     }
 
 }

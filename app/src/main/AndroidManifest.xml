@@ -31,7 +31,8 @@
         <provider
             android:name=".data.StockProvider"
             android:authorities="com.udacity.stockhawk"
-            android:exported="false" />
+            android:grantUriPermissions="true"
+            android:exported="true" />
 
         <service
             android:name=".sync.QuoteJobService"
@@ -46,7 +47,8 @@
 
         <receiver android:name=".widget.StockEyasWidget">
             <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
+                <action android:name="com.udacity.stockhawk.ACTION_DATA_UPDATED"/>
             </intent-filter>
 
             <meta-data

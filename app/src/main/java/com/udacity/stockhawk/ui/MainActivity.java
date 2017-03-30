@@ -61,6 +61,7 @@ import static android.R.id.message;
 import static android.icu.lang.UCharacter.GraphemeClusterBreak.V;
 import static com.udacity.stockhawk.R.id.symbol;
 import static com.udacity.stockhawk.R.string.search;
+import static com.udacity.stockhawk.sync.QuoteSyncJob.ACTION_DATA_UPDATED;
 
 
 public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>,
@@ -262,13 +263,23 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             return null;
         }
 
+        private void updateWidgets() {
+            Context context = getApplicationContext();
+            // Setting the package ensures that only components in our app will receive the broadcast
+            Intent dataUpdatedIntent = new Intent(ACTION_DATA_UPDATED)
+                    .setPackage(context.getPackageName());
+            context.sendBroadcast(dataUpdatedIntent);
+        }
+
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
             if (validStock){
                 QuoteSyncJob.syncImmediately(getApplicationContext());
-            swipeRefreshLayout.setRefreshing(false);
-            
+                swipeRefreshLayout.setRefreshing(false);
+                updateWidgets();
+
+
 
             }else{
                 swipeRefreshLayout.setRefreshing(false);

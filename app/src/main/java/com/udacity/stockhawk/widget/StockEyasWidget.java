@@ -47,16 +47,19 @@ public class StockEyasWidget extends AppWidgetProvider {
             widget.setPendingIntentTemplate(R.id.widget_list, startActivityPendingIntent);
 
             appWidgetManager.updateAppWidget(appWidgetIds[i], widget);
-
-//            if (PrefUtils.isNetworkAvailable(context)) {
-//                updateAppWidget(context, appWidgetManager, appWidgetIds[i]);
-//            }else{
-//                Intent toApp = new Intent(context, MainActivity.class);
-//                context.startActivity(toApp);
-//            }
         }
     }
 
+    @Override
+    public void onReceive(@NonNull Context context, @NonNull Intent intent) {
+        super.onReceive(context, intent);
+        if (QuoteSyncJob.ACTION_DATA_UPDATED.equals(intent.getAction())) {
+            AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
+            int[] appWidgetIds = appWidgetManager.getAppWidgetIds(
+                    new ComponentName(context, getClass()));
+            appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.widget_list);
+        }
+    }
 
 
     @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
